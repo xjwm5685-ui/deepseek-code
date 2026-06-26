@@ -8,25 +8,21 @@
 
 > 你喜欢哪个 AI？开源的才是最屌的。
 
-牢 D (DeepSeek) 官方 Claude Code 全面复刻+魔改工程化项目。虽然很难绷，但是它不叫 CCB(踩踩背)了，现在叫 DSC(大傻春)... 而且，我们实现了企业版或者需要登录各种账号才能使用的特性，在此基础上还扩展了一堆好玩的东西。
+牢 D (DeepSeek) 官方 Claude Code 全面魔改版。虽然很难绷，但是它不叫 CCB(踩踩背)了，现在叫 DSC(大傻春)... 我们基于开源版做了 DeepSeek 品牌替换、全面系统提示词重写、彩色渐变动画、上下文水位仪表、多 Provider 支持、Symphony 四乐章编程模式。
 
-[文档](https://ccb.agent-aura.top/) | [留影文档](./Friends.md) | [Discord 群，群主在线发癫](https://discord.gg/uApuzJWGKX)
+**这不是 Peri Code / Voice Mode / Computer Use / 插件市场 / Poor Mode / Goal / Ultracode / Artifacts / 多模型群控** — 那些是原版的功能。我们只列我们自己加了的东西。
+
+[Discord 群，群主在线发癫](https://discord.gg/uApuzJWGKX)
 
 | 特性 | 说明 |
 |------|------|
-| **🎯 Goal 持续驱动** | `/goal` 设定目标后自动跑完，带 token budget、审计、`pause/resume`，网络断了自动暂停 |
-| **🌈 彩虹渐变动画** | 输入框边框全彩渐变，蓝色紫色粉色橙色黄色绿色青色彩虹循环，摸鱼的时候看着很爽 |
+| **🌈 彩虹渐变动画** | 输入框边框全彩渐变，蓝色紫色粉色橙色黄色绿色青色彩虹循环，摸鱼看着很爽 |
 | **📊 实时上下文水位** | 底部状态栏 `██████░░░░ 62%`，绿黄红三色预警，超过 80% 疯狂闪烁逼你 compact |
-| **🎵 Symphony 模式** | 四乐章编程纪律：读谱→排练→作曲→终曲，10 项自检清单，写了不像你写的 |
-| **🧠 Ultracode** | 多 Agent 编排，`Workflow` 工具跑 JS 脚本，双栏监控面板 |
-| **📦 Artifacts** | HTML 上传到公开 URL，Cloudflare Worker + R2 全开源可自托管 |
+| **🎵 Symphony 模式** | 四乐章编程纪律：读谱→排练→作曲→终曲，10 项自检清单，代码写得不像你写的 |
 | **🌐 任意 API 协议** | OpenAI / Anthropic / Gemini / Grok / 任意转发站，`/login` 配一下就能用 |
-| **🔧 多模型群控** | Pipe IPC 多实例，LAN 跨机器零配置发现，`Shift+↓` 交互 |
-| **🦀 Peri Code** | Rust 写的 CC 兼容 Agent，树莓派也能跑 |
-| **🎤 Voice Mode** | 语音输入，支持豆包 |
-| **🖥️ Computer Use** | 截图键鼠控制，Chrome 自动化 |
-| **📦 插件市场** | MCP 服务器管理，官方市场，自定义插件 |
-| **💰 Poor Mode** | 穷鬼模式，关记忆提取省 Token |
+| **📁 ~/.DeepSeek 配置** | `C:\Users\<你>\.DeepSeek\config.json` 手动配 API，兼容 Claude 旧配置自动回退 |
+| **🔄 Shift+Tab 模式轮换** | Default → Gentle → Sharp → Workhorse → Token Saver → Super AI → Symphony 一键切换 |
+| **🔵 全面 DeepSeek 化** | 从里到外 Claude 全换成 DeepSeek，包括所有系统提示词重写 |
 
 - 🚀 [别 b 了，怎么启动](#-快速开始)
 - 🐛 [程序又崩了，怎么调](#vs-code-调试)
