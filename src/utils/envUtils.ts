@@ -30,29 +30,16 @@ export const getDeepSeekConfigHomeDir = memoize((): string => {
  * The user can place a config.json in ~/.DeepSeek/ to set up API keys.
  * If ~/.DeepSeek/ doesn't exist or has no config, falls back to ~/.claude/.
  */
+// Memoized: 150+ callers, many on hot paths. Keyed off CLAUDE_CONFIG_DIR.
+// Always returns the Claude Code config directory (~/.claude/).
+// DeepSeek config (~/.DeepSeek/) is read separately via getDeepSeekConfigHomeDir().
 export const getClaudeConfigHomeDir = memoize(
   (): string => {
-    const deepseekDir =
-      process.env.DEEPSEEK_CONFIG_DIR ?? join(homedir(), '.DeepSeek')
-    const claudeDir =
+    return (
       process.env.CLAUDE_CONFIG_DIR ?? join(homedir(), '.claude')
-    const deepseekNormalized = deepseekDir.normalize('NFC')
-    const claudeNormalized = claudeDir.normalize('NFC')
-
-    // Check if DeepSeek config exists and has a config file
-    try {
-      if (existsSync(deepseekNormalized)) {
-        // DeepSeek dir exists — use it
-        return deepseekNormalized
-      }
-    } catch {
-      // ignore
-    }
-
-    // Fall back to DeepSeek Code config
-    return claudeNormalized
+    ).normalize('NFC')
   },
-  () => process.env.DEEPSEEK_CONFIG_DIR ?? process.env.CLAUDE_CONFIG_DIR,
+  () => process.env.CLAUDE_CONFIG_DIR,
 )
 
 export function getTeamsDir(): string {
