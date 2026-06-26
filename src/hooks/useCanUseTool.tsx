@@ -130,6 +130,7 @@ function useCanUseTool(
                   result.decisionReason?.type === 'classifier' &&
                   result.decisionReason.classifier === 'auto-mode'
                 ) {
+                  const userFacingName = tool.userFacingName(input);
                   recordAutoModeDenial({
                     toolName: tool.name,
                     display: description,
@@ -141,7 +142,7 @@ function useCanUseTool(
                     priority: 'immediate',
                     jsx: (
                       <>
-                        <Text color="error">{tool.userFacingName(input).toLowerCase()} denied by auto mode</Text>
+                        <Text color="error">{userFacingName.toLowerCase()} denied by auto mode</Text>
                         <Text dimColor> · /permissions</Text>
                       </>
                     ),

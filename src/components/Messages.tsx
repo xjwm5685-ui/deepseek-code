@@ -875,7 +875,7 @@ const MessagesImpl = ({
           const extracted = tool?.extractSearchText?.(msg.toolUseResult as never);
           // undefined = tool didn't implement → keep heuristic. Empty
           // string = tool says "nothing to index" → respect that.
-          if (extracted !== undefined) text = extracted;
+          if (typeof extracted === 'string') text = extracted;
         }
       }
       // Cache LOWERED: setSearchQuery's hot loop indexOfs per keystroke.
@@ -883,7 +883,7 @@ const MessagesImpl = ({
       // ~same steady-state memory for zero per-keystroke alloc. Cache
       // GC's with messages on transcript exit. Tool methods return raw;
       // renderableSearchText already lowercases (redundant but cheap).
-      const lowered = text.toLowerCase();
+      const lowered = typeof text === 'string' ? text.toLowerCase() : '';
       searchTextCache.current.set(msg, lowered);
       return lowered;
     },

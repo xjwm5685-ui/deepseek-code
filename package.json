@@ -1,6 +1,6 @@
 {
   "name": "deepseek-dsc",
-  "version": "2.8.11",
+  "version": "2.8.15",
   "description": "DeepSeek Code CLI — interactive AI coding assistant in the terminal",
   "type": "module",
   "author": "deepseek-code <deepseek-code@proton.me>",

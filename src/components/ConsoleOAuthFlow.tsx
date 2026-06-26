@@ -278,10 +278,34 @@ export function ConsoleOAuthFlow({
         if (!orgResult.valid) {
           throw new Error((orgResult as { valid: false; message: string }).message);
         }
-        // Reset modelType to anthropic when using OAuth login
-        updateSettingsForSource('userSettings', { modelType: 'anthropic' } as unknown as Parameters<
-          typeof updateSettingsForSource
-        >[1]);
+        // Reset provider state to Anthropic and clear stale OpenAI-compatible
+        // routing so `/login` doesn't keep falling back to old OpenAI config.
+        const anthropicSettingsUpdate: Parameters<typeof updateSettingsForSource>[1] = {
+          modelType: 'anthropic',
+          env: {
+            CLAUDE_CODE_USE_OPENAI: undefined,
+            OPENAI_AUTH_MODE: undefined,
+            OPENAI_API_KEY: undefined,
+            OPENAI_BASE_URL: undefined,
+            OPENAI_MODEL: undefined,
+            OPENAI_DEFAULT_HAIKU_MODEL: undefined,
+            OPENAI_DEFAULT_SONNET_MODEL: undefined,
+            OPENAI_DEFAULT_OPUS_MODEL: undefined,
+            OPENAI_SMALL_FAST_MODEL: undefined,
+          } as unknown as Record<string, string>,
+        };
+        updateSettingsForSource('userSettings', anthropicSettingsUpdate);
+        delete process.env.CLAUDE_CODE_USE_OPENAI;
+        delete process.env.OPENAI_AUTH_MODE;
+        delete process.env.OPENAI_API_KEY;
+        delete process.env.OPENAI_BASE_URL;
+        delete process.env.OPENAI_MODEL;
+        delete process.env.OPENAI_DEFAULT_HAIKU_MODEL;
+        delete process.env.OPENAI_DEFAULT_SONNET_MODEL;
+        delete process.env.OPENAI_DEFAULT_OPUS_MODEL;
+        delete process.env.OPENAI_SMALL_FAST_MODEL;
+        clearOpenAIClientCache();
+        void removeChatGPTAuth().catch(() => {});
 
         setOAuthStatus({ state: 'success' });
         void sendNotification(

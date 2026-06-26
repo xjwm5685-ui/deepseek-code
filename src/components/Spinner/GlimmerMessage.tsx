@@ -13,9 +13,29 @@ type Props = {
   flashOpacity: number;
   shimmerColor: keyof Theme;
   stalledIntensity?: number;
+  appendSpace?: boolean;
 };
 
 const ERROR_RED = { r: 171, g: 43, b: 63 };
+const GRADIENT_STOPS = [
+  { r: 74, g: 108, b: 247 },
+  { r: 108, g: 74, b: 247 },
+  { r: 247, g: 74, b: 200 },
+  { r: 247, g: 120, b: 74 },
+  { r: 247, g: 210, b: 74 },
+  { r: 74, g: 210, b: 120 },
+  { r: 74, g: 180, b: 247 },
+  { r: 74, g: 108, b: 247 },
+] as const;
+
+function getGradientRGB(position: number): { r: number; g: number; b: number } {
+  const idx = Math.max(0, Math.min(position, 1)) * (GRADIENT_STOPS.length - 1);
+  const i = Math.floor(idx);
+  const f = idx - i;
+  const c1 = GRADIENT_STOPS[Math.min(i, GRADIENT_STOPS.length - 1)]!;
+  const c2 = GRADIENT_STOPS[Math.min(i + 1, GRADIENT_STOPS.length - 1)]!;
+  return interpolateColor(c1, c2, f);
+}
 
 export function GlimmerMessage({
   message,
@@ -25,6 +45,7 @@ export function GlimmerMessage({
   flashOpacity,
   shimmerColor,
   stalledIntensity = 0,
+  appendSpace = true,
 }: Props): React.ReactNode {
   const [themeName] = useTheme();
   const theme = getTheme(themeName);
@@ -33,9 +54,12 @@ export function GlimmerMessage({
   // message is stable within a turn. Precompute grapheme segmentation + widths
   // once per message instead of per frame. Measured -81% on the shimmer path.
   const { segments, messageWidth } = React.useMemo(() => {
-    const segs: { segment: string; width: number }[] = [];
+    const segs: { segment: string; width: number; start: number; end: number }[] = [];
+    let colPos = 0;
     for (const { segment } of getGraphemeSegmenter().segment(message)) {
-      segs.push({ segment, width: stringWidth(segment) });
+      const width = stringWidth(segment);
+      segs.push({ segment, width, start: colPos, end: colPos + width });
+      colPos += width;
     }
     return { segments: segs, messageWidth: stringWidth(message) };
   }, [message]);
@@ -53,7 +77,7 @@ export function GlimmerMessage({
       return (
         <>
           <Text color={color}>{message}</Text>
-          <Text color={color}> </Text>
+          {appendSpace ? <Text color={color}> </Text> : null}
         </>
       );
     }
@@ -63,75 +87,41 @@ export function GlimmerMessage({
     return (
       <>
         <Text color={color}>{message}</Text>
-        <Text color={color}> </Text>
+        {appendSpace ? <Text color={color}> </Text> : null}
       </>
     );
   }
-
-  // tool-use mode: all chars flash with the same opacity, so render as a
-  // single <Text> instead of N individual FlashingChar components.
-  if (mode === 'tool-use') {
-    const baseColorStr = theme[messageColor];
-    const shimmerColorStr = theme[shimmerColor];
-    const baseRGB = baseColorStr ? parseRGB(baseColorStr) : null;
-    const shimmerRGB = shimmerColorStr ? parseRGB(shimmerColorStr) : null;
-
-    if (baseRGB && shimmerRGB) {
-      const interpolated = interpolateColor(baseRGB, shimmerRGB, flashOpacity);
-      return (
-        <>
-          <Text color={toRGBColor(interpolated)}>{message}</Text>
-          <Text color={messageColor}> </Text>
-        </>
-      );
-    }
-
-    const color = flashOpacity > 0.5 ? shimmerColor : messageColor;
-    return (
-      <>
-        <Text color={color}>{message}</Text>
-        <Text color={messageColor}> </Text>
-      </>
-    );
-  }
-
-  // Shimmer mode: only chars within ±1 of glimmerIndex need the shimmer
-  // color. When glimmer is offscreen, render as a single <Text>.
-  const shimmerStart = glimmerIndex - 1;
-  const shimmerEnd = glimmerIndex + 1;
-
-  if (shimmerStart >= messageWidth || shimmerEnd < 0) {
-    return (
-      <>
-        <Text color={messageColor}>{message}</Text>
-        <Text color={messageColor}> </Text>
-      </>
-    );
-  }
-
-  // Split into at most 3 segments by visual column position
-  const clampedStart = Math.max(0, shimmerStart);
-  let colPos = 0;
-  let before = '';
-  let shim = '';
-  let after = '';
-  for (const { segment, width } of segments) {
-    if (colPos + width <= clampedStart) {
-      before += segment;
-    } else if (colPos > shimmerEnd) {
-      after += segment;
-    } else {
-      shim += segment;
-    }
-    colPos += width;
-  }
+  const shimmerColorStr = theme[shimmerColor];
+  const shimmerRGB = shimmerColorStr ? parseRGB(shimmerColorStr) : null;
+  const gradientOffset =
+    messageWidth > 0 ? ((((glimmerIndex % messageWidth) + messageWidth) % messageWidth) / messageWidth) % 1 : 0;
 
   return (
     <>
-      {before && <Text color={messageColor}>{before}</Text>}
-      <Text color={shimmerColor}>{shim}</Text>
-      {after && <Text color={messageColor}>{after}</Text>}
-      <Text color={messageColor}> </Text>
+      {segments.map(({ segment, start, end }, index) => {
+        const center = (start + end) / 2;
+        const basePosition = messageWidth > 0 ? ((gradientOffset + center / messageWidth) % 1 + 1) % 1 : 0;
+        let colorRGB = getGradientRGB(basePosition);
+
+        if (shimmerRGB) {
+          if (mode === 'tool-use') {
+            colorRGB = interpolateColor(colorRGB, shimmerRGB, flashOpacity);
+          } else {
+            const distance = Math.abs(center - glimmerIndex);
+            if (distance <= 2) {
+              const shimmerStrength = 1 - distance / 2;
+              colorRGB = interpolateColor(colorRGB, shimmerRGB, shimmerStrength);
+            }
+          }
+        }
+
+        return (
+          <Text key={`${segment}-${index}`} color={toRGBColor(colorRGB)}>
+            {segment}
+          </Text>
+        );
+      })}
+      {appendSpace ? <Text color={messageColor}> </Text> : null}
     </>
   );
 }

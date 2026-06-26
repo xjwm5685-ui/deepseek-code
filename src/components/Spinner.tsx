@@ -2,7 +2,7 @@
 import { Box, Text, stringWidth } from '@anthropic/ink';
 import * as React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { computeGlimmerIndex, computeShimmerSegments, SHIMMER_INTERVAL_MS } from '../bridge/bridgeStatusUtil.js';
+import { computeGlimmerIndex, SHIMMER_INTERVAL_MS } from '../bridge/bridgeStatusUtil.js';
 import { feature } from 'bun:bundle';
 import { getKairosActive, getUserMsgOptIn } from '../bootstrap/state.js';
 import { getFeatureValue_CACHED_MAY_BE_STALE } from '../services/analytics/growthbook.js';
@@ -457,7 +457,6 @@ function BriefSpinner({ mode, overrideMessage }: BriefSpinnerProps): React.React
   const verbWidth = useMemo(() => stringWidth(verb), [verb]);
   const glimmerIndex =
     reducedMotion || showConnWarning ? -100 : computeGlimmerIndex(Math.floor(time / SHIMMER_INTERVAL_MS), verbWidth);
-  const { before, shimmer, after } = computeShimmerSegments(verb, glimmerIndex);
 
   const { columns } = useTerminalSize();
   const rightText = runningCount > 0 ? `${runningCount} in background` : '';
@@ -473,9 +472,15 @@ function BriefSpinner({ mode, overrideMessage }: BriefSpinnerProps): React.React
         <Text color="error">{connText + dots}</Text>
       ) : (
         <>
-          {before ? <Text dimColor>{before}</Text> : null}
-          {shimmer ? <Text>{shimmer}</Text> : null}
-          {after ? <Text dimColor>{after}</Text> : null}
+          <GlimmerMessage
+            message={verb}
+            mode={mode}
+            messageColor="claude"
+            glimmerIndex={glimmerIndex}
+            flashOpacity={0.25 + dotBreath * 0.55}
+            shimmerColor="claudeShimmer"
+            appendSpace={false}
+          />
           {!reducedMotion ? <AnimatedThinkingDots animated /> : <Text dimColor>… </Text>}
         </>
       )}

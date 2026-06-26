@@ -243,7 +243,7 @@ export function LogoV2(): React.ReactNode {
           >
             <Text bold>{welcomeMessage}</Text>
             <Box marginY={1}>
-              <Clawd />
+              <Clawd variant="compact" />
             </Box>
             <Text dimColor>{modelDisplayName}</Text>
             <Text dimColor>{billingType}</Text>
@@ -311,7 +311,7 @@ export function LogoV2(): React.ReactNode {
                 <Text bold>{welcomeMessage}</Text>
               </Box>
 
-              <Clawd />
+              <Clawd variant="hero" />
 
               <Box flexDirection="column" alignItems="center">
                 <Text dimColor>{modelLine}</Text>

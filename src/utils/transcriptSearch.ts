@@ -16,6 +16,10 @@ const RENDERED_AS_SENTINEL = new Set([
 
 const searchTextCache = new WeakMap<RenderableMessage, string>()
 
+function normalizeSearchText(value: unknown): string {
+  return typeof value === 'string' ? value : ''
+}
+
 /** Flatten a RenderableMessage to lowercased searchable text. WeakMap-
  *  cached — messages are append-only and immutable so a hit is always
  *  valid. Lowercased at cache time: the only caller immediately
@@ -24,7 +28,7 @@ const searchTextCache = new WeakMap<RenderableMessage, string>()
 export function renderableSearchText(msg: RenderableMessage): string {
   const cached = searchTextCache.get(msg)
   if (cached !== undefined) return cached
-  const result = computeSearchText(msg).toLowerCase()
+  const result = normalizeSearchText(computeSearchText(msg)).toLowerCase()
   searchTextCache.set(msg, result)
   return result
 }
@@ -120,7 +124,7 @@ function computeSearchText(msg: RenderableMessage): string {
   }
   // Strip <system-reminder> anywhere — Claude context, not user-visible.
   // Mid-message on cc -c resumes (memory reminders between prompt lines).
-  let t = raw
+  let t = normalizeSearchText(raw)
   let open = t.indexOf('<system-reminder>')
   while (open >= 0) {
     const close = t.indexOf(SYSTEM_REMINDER_CLOSE, open)

@@ -1,30 +1,45 @@
 import * as React from 'react';
-import { Box, Text } from '@anthropic/ink';
-import { env } from '../../utils/env.js';
+import { Box, Text, stringWidth } from '@anthropic/ink';
+
+export type ClawdVariant = 'hero' | 'compact';
+
+const HERO_CLAWD_LINES = [
+  '     ⢀  ⡀',
+  '⢀⣴⣿⣿⣿⣿⣄⡀⢿⣦⣴⡶',
+  '⣿⠉⠛⠻⣿⣿⣟⢿⣦⣿⠉',
+  '⢻⣆  ⠈⠻⣿⣶⣿⠏',
+  ' ⠻⢷⣤⣿⣦⣝⠿⠷⠄',
+  '   ⠈⠉⠉',
+] as const;
+
+const COMPACT_CLAWD_LINES = [
+  '      ⡀',
+  '⣰⣾⣿⣿⣷⣄⢿⣶⠞',
+  '⣧ ⠉⠻⣿⣝⣿⠇',
+  '⠘⢷⣤⣦⣜⡿⠯',
+  '   ⠉',
+] as const;
+
+function getArtWidth(lines: readonly string[]): number {
+  return Math.max(...lines.map(line => stringWidth(line)));
+}
+
+export const HERO_CLAWD_WIDTH = getArtWidth(HERO_CLAWD_LINES);
+export const COMPACT_CLAWD_WIDTH = getArtWidth(COMPACT_CLAWD_LINES);
 
 /**
- * DeepSeek whale logo rendered in block characters.
- * Shown next to the version header in the startup UI.
+ * DeepSeek whale logo rendered from the source SVG as a static braille dot-matrix.
  */
-export function Clawd(): React.ReactNode {
-  if (env.terminal === 'Apple_Terminal') {
-    return (
-      <Box flexDirection="column" alignItems="center" paddingX={1}>
-        <Text color="clawd_body">{'  .   |""|'}</Text>
-        <Text color="clawd_body">{' ":"  \\_/ '}</Text>
-        <Text color="clawd_body">{'~^~^~^~^~^~'}</Text>
-      </Box>
-    );
-  }
+export function Clawd({ variant = 'hero' }: { variant?: ClawdVariant } = {}): React.ReactNode {
+  const lines = variant === 'compact' ? COMPACT_CLAWD_LINES : HERO_CLAWD_LINES;
 
   return (
     <Box flexDirection="column">
-      <Text color="clawd_body">{'    .                         '}</Text>
-      <Text color="clawd_body">{'   ":"                        '}</Text>
-      <Text color="clawd_body">{' ___:____     |"\\/"/|          '}</Text>
-      <Text color="clawd_body">{",'        `.    \\  /          "}</Text>
-      <Text color="clawd_body">{'|  O        \\___/  |          '}</Text>
-      <Text color="clawd_body">{'~^~^~^^~^~^~^~^~^~^~^~^~     '}</Text>
+      {lines.map(line => (
+        <Text key={line} color="clawd_body">
+          {line}
+        </Text>
+      ))}
     </Box>
   );
 }

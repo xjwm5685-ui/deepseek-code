@@ -13,6 +13,7 @@ import { getStoredChangelogFromMemory, parseChangelog } from './releaseNotes.js'
 import { gt } from './semver.js'
 import { loadMessageLogs } from './sessionStorage.js'
 import { getInitialSettings } from './settings/settings.js'
+import { HERO_CLAWD_WIDTH } from '../components/LogoV2/Clawd.js'
 
 // Layout constants
 const MAX_LEFT_WIDTH = 50
@@ -86,7 +87,7 @@ export function calculateOptimalLeftWidth(
     stringWidth(welcomeMessage),
     stringWidth(truncatedCwd),
     stringWidth(modelLine),
-    20, // Minimum for clawd art
+    HERO_CLAWD_WIDTH, // Keep enough width for the hero whale art
   )
   return Math.min(contentWidth + 4, MAX_LEFT_WIDTH) // +4 for padding
 }

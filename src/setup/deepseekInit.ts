@@ -34,8 +34,9 @@ const DEFAULT_CONFIG_JSON = JSON.stringify(
         'Or set "provider" and "apiKey" below. The settings/env below override auto-detection.',
     },
 
-    // Pick ONE provider. Supported: openai, anthropic, gemini, grok, bedrock, vertex, foundry
-    provider: 'openai',
+    // Pick ONE provider after filling real credentials. Leave blank to keep
+    // Claude Code auth/config behavior until you explicitly choose a provider.
+    provider: '',
 
     // Provider-specific settings (uncomment and fill what you need):
     _openai: {
@@ -163,6 +164,23 @@ export function applyDeepSeekConfig(): void {
     if (!config.provider) return
 
     const provider = config.provider as string
+    const providerSection = config[`_${provider}`]
+    const isUnconfiguredTemplate =
+      provider === 'openai' &&
+      !config.apiKey &&
+      providerSection?.apiKey === 'sk-...' &&
+      providerSection?.baseUrl === 'https://api.openai.com/v1' &&
+      providerSection?.model === 'gpt-4o'
+
+    // Ignore the generated template's placeholder OpenAI provider so a fresh
+    // install can still use Claude/Anthropic auth until the user explicitly
+    // configures a real third-party provider.
+    if (isUnconfiguredTemplate) {
+      logForDebugging(
+        '[DeepSeek] Ignoring unconfigured default OpenAI template in ~/.DeepSeek/config.json',
+      )
+      return
+    }
 
     // Set the USE flag for the selected provider
     const flagMap: Record<string, string> = {
@@ -177,6 +195,12 @@ export function applyDeepSeekConfig(): void {
     }
 
     const flag = flagMap[provider]
+    delete process.env.CLAUDE_CODE_USE_OPENAI
+    delete process.env.CLAUDE_CODE_USE_GEMINI
+    delete process.env.CLAUDE_CODE_USE_GROK
+    delete process.env.CLAUDE_CODE_USE_BEDROCK
+    delete process.env.CLAUDE_CODE_USE_VERTEX
+    delete process.env.CLAUDE_CODE_USE_FOUNDRY
     if (flag) {
       process.env[flag] = '1'
     }
@@ -197,7 +221,6 @@ export function applyDeepSeekConfig(): void {
     const mapping = providerKeyMap[provider]
     if (mapping) {
       // Try to find API key from provider-specific section or top-level
-      const providerSection = config[`_${provider}`]
       const apiKey = providerSection?.apiKey || config.apiKey || ''
       const baseUrl = providerSection?.baseUrl || ''
       const model = providerSection?.model || config.model || ''

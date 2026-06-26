@@ -7,6 +7,7 @@ import { useSetPromptOverlay } from '../../context/promptOverlayContext.js';
 import type { VerificationStatus } from '../../hooks/useApiKeyVerification.js';
 import type { IDESelection } from '../../hooks/useIdeSelection.js';
 import { useSettings } from '../../hooks/useSettings.js';
+import { useMainLoopModel } from '../../hooks/useMainLoopModel.js';
 import { useTerminalSize } from '../../hooks/useTerminalSize.js';
 import { Box, Text, useInput } from '@anthropic/ink';
 import type { MCPServerConnection } from '../../services/mcp/types.js';
@@ -104,6 +105,7 @@ function PromptInputFooter({
   onOpenTasksDialog,
 }: Props): ReactNode {
   const settings = useSettings();
+  const mainLoopModel = useMainLoopModel();
   const { columns, rows } = useTerminalSize();
   const messagesRef = useRef(messages);
   messagesRef.current = messages;
@@ -183,7 +185,7 @@ function PromptInputFooter({
         </Box>
         <Box flexShrink={1} gap={1} alignItems="center">
           {(() => {
-            const ctxLimit = getEffectiveContextWindowSize();
+            const ctxLimit = getEffectiveContextWindowSize(mainLoopModel);
             const ctxUsed = tokenCountWithEstimation(messagesRef.current);
             return ctxLimit > 0 ? <ContextUsageMeter used={ctxUsed} limit={ctxLimit} showBar barWidth={8} /> : null;
           })()}

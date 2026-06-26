@@ -56,8 +56,32 @@ const MAX_VOICE_HINT_SHOWS = 3;
 
 const RSS_UPDATE_INTERVAL_MS = 5_000;
 const GOAL_TICK_INTERVAL_MS = 1_000;
+const CLOCK_TICK_INTERVAL_MS = 1_000;
+
+const CLOCK_GRADIENT = [
+  { r: 74, g: 108, b: 247 },
+  { r: 108, g: 74, b: 247 },
+  { r: 247, g: 74, b: 200 },
+  { r: 247, g: 120, b: 74 },
+  { r: 247, g: 210, b: 74 },
+  { r: 74, g: 210, b: 120 },
+  { r: 74, g: 180, b: 247 },
+  { r: 74, g: 108, b: 247 },
+] as const;
 
 type RssState = { text: string; level: 'normal' | 'warning' | 'error' };
+
+function interpolateGradientColor(position: number): string {
+  const idx = Math.max(0, Math.min(position, 1)) * (CLOCK_GRADIENT.length - 1);
+  const i = Math.floor(idx);
+  const f = idx - i;
+  const c1 = CLOCK_GRADIENT[Math.min(i, CLOCK_GRADIENT.length - 1)]!;
+  const c2 = CLOCK_GRADIENT[Math.min(i + 1, CLOCK_GRADIENT.length - 1)]!;
+  const r = Math.round(c1.r + (c2.r - c1.r) * f);
+  const g = Math.round(c1.g + (c2.g - c1.g) * f);
+  const b = Math.round(c1.b + (c2.b - c1.b) * f);
+  return `rgb(${r},${g},${b})`;
+}
 
 function useRssDisplay(): RssState | null {
   const [state, setState] = useState<RssState | null>(null);
@@ -65,7 +89,9 @@ function useRssDisplay(): RssState | null {
     function update(): void {
       const mb = process.memoryUsage().rss / (1024 * 1024);
       const level = mb >= 1024 ? 'error' : mb >= 512 ? 'warning' : 'normal';
-      const text = formatFileSize(mb * 1024 * 1024);
+      const size = formatFileSize(mb * 1024 * 1024);
+      const text =
+        level === 'error' ? `memory high ${size}` : level === 'warning' ? `memory ${size}` : 'ready';
       setState(prev => (prev?.text === text ? prev : { text, level }));
     }
     update();
@@ -73,6 +99,37 @@ function useRssDisplay(): RssState | null {
     return () => clearInterval(timer);
   }, []);
   return state;
+}
+
+function GradientClock(): React.ReactNode {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), CLOCK_TICK_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, []);
+
+  const date = new Date(now);
+  const label = date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+  const sweep = (date.getSeconds() + date.getMilliseconds() / 1000) / 60;
+
+  return (
+    <Text key="clock">
+      {[...label].map((char, index) => {
+        const position = (sweep + index / Math.max(label.length, 1)) % 1;
+        return (
+          <Text key={`${char}-${index}`} color={interpolateGradientColor(position)}>
+            {char}
+          </Text>
+        );
+      })}
+    </Text>
+  );
 }
 
 type Props = {
@@ -414,7 +471,8 @@ function ModeIndicator({
     ...(shouldShowPrStatus
       ? [<PrBadge key="pr-status" number={prStatus.number!} url={prStatus.url!} reviewState={prStatus.reviewState!} />]
       : []),
-    // RSS memory indicator — always visible
+    <GradientClock key="clock" />,
+    // Footer health indicator — keep normal state minimal, only show memory details when elevated
     ...(rssState
       ? [
           <Text
@@ -422,7 +480,7 @@ function ModeIndicator({
             dimColor={rssState.level === 'normal'}
             color={rssState.level === 'error' ? 'error' : rssState.level === 'warning' ? 'warning' : undefined}
           >
-            {rssState.text} · pid:{process.pid}
+            {rssState.text}
           </Text>,
         ]
       : []),
