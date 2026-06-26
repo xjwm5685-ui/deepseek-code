@@ -15,13 +15,17 @@ const envFeatures = Object.keys(process.env)
   .map(k => k.replace('FEATURE_', ''))
 const features = [...new Set([...DEFAULT_BUILD_FEATURES, ...envFeatures])]
 
-// Step 2: Bundle with splitting
+// Step 2: Bundle with splitting (can be disabled via --no-splitting for faster Node.js startup).
+// When --no-splitting is set, also target 'node' and minify for smaller single-file output.
+const noSplitting = process.argv.includes('--no-splitting')
+const buildTarget = noSplitting ? 'node' : 'bun'
 const result = await Bun.build({
   entrypoints: ['src/entrypoints/cli.tsx'],
   outdir,
-  target: 'bun',
-  splitting: true,
-  sourcemap: 'linked',
+  target: buildTarget,
+  splitting: !noSplitting,
+  minify: noSplitting,
+  sourcemap: noSplitting ? 'none' : 'linked',
   define: {
     ...getMacroDefines(),
     // React production mode — eliminates _debugStack Error objects
