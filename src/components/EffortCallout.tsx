@@ -111,6 +111,7 @@ function EffortOptionLabel({ level, text }: { level: EffortLevel; text: string }
  */
 export function shouldShowEffortCallout(model: string): boolean {
   // Only show for Opus 4.6 for now
+  if (!model) return false;
   const parsed = parseUserSpecifiedModel(model);
   if (!parsed.toLowerCase().includes('opus-4-6')) {
     return false;
