@@ -1,63 +1,57 @@
-# DeepSeek Code V5 (DSC)
+# DeepSeek Code V5 — 也不是不行 (DSC)
 
-[![GitHub Stars](https://img.shields.io/github/stars/deepseek-code/deepseek-code?style=flat-square&logo=github&color=blue)](https://github.com/deepseek-code/deepseek-code/stargazers)
-[![GitHub Contributors](https://img.shields.io/github/contributors/deepseek-code/deepseek-code?style=flat-square&color=green)](https://github.com/deepseek-code/deepseek-code/graphs/contributors)
-[![GitHub Issues](https://img.shields.io/github/issues/deepseek-code/deepseek-code?style=flat-square&color=orange)](https://github.com/deepseek-code/deepseek-code/issues)
-[![GitHub License](https://img.shields.io/github/license/deepseek-code/deepseek-code?style=flat-square)](https://github.com/deepseek-code/deepseek-code/blob/main/LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/deepseek-code/deepseek-code?style=flat-square&color=blue)](https://github.com/deepseek-code/deepseek-code/commits/main)
+[![GitHub Stars](https://img.shields.io/github/stars/xjwm5685-ui/deepseek-code?style=flat-square&logo=github&color=blue)](https://github.com/xjwm5685-ui/deepseek-code/stargazers)
+[![GitHub Contributors](https://img.shields.io/github/contributors/xjwm5685-ui/deepseek-code?style=flat-square&color=green)](https://github.com/xjwm5685-ui/deepseek-code/graphs/contributors)
+[![GitHub Issues](https://img.shields.io/github/issues/xjwm5685-ui/deepseek-code?style=flat-square&color=orange)](https://github.com/xjwm5685-ui/deepseek-code/issues)
+[![npm](https://img.shields.io/npm/v/deepseek-dsc?style=flat-square&color=red)](https://www.npmjs.com/package/deepseek-dsc)
 [![Bun](https://img.shields.io/badge/runtime-Bun-black?style=flat-square&logo=bun)](https://bun.sh/)
 [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord)](https://discord.gg/uApuzJWGKX)
 
-> Which AI do you like? The open source one is the best.
+> 你喜欢哪个 AI？开源的才是最屌的。
 
-DeepSeek Code (DSC) — 基于 DeepSeek Code 开源版本改造的工程化项目。我们实现了企业版或需要登陆 Claude 账号才能使用的特性，并在此基础上扩展了更多好玩的特性。
+牢 D (DeepSeek) 官方 Claude Code 全面复刻+魔改工程化项目。虽然很难绷，但是它不叫 CCB(踩踩背)了，现在叫 DSC(大傻春)... 而且，我们实现了企业版或者需要登录各种账号才能使用的特性，在此基础上还扩展了一堆好玩的东西。
 
-[Peri Code](https://github.com/KonghaYao/peri)：DeepSeek Code 兼容的 Rust Agent，多年大模型经验匠心制作，国内大模型（DeepSeek/GLM）精调，CPU/内存极致优化，在开发版/树莓派上也能跑 CC 一样的体验。
+[文档](https://ccb.agent-aura.top/) | [留影文档](./Friends.md) | [Discord 群，群主在线发癫](https://discord.gg/uApuzJWGKX)
 
-[文档在这里](https://ccb.agent-aura.top/) | [留影文档在这里](./Friends.md) | [Discord 群组，群主在线答疑](https://discord.gg/uApuzJWGKX)
+| 特性 | 说明 |
+|------|------|
+| **🎯 Goal 持续驱动** | `/goal` 设定目标后自动跑完，带 token budget、审计、`pause/resume`，网络断了自动暂停 |
+| **🌈 彩虹渐变动画** | 输入框边框全彩渐变，蓝色紫色粉色橙色黄色绿色青色彩虹循环，摸鱼的时候看着很爽 |
+| **📊 实时上下文水位** | 底部状态栏 `██████░░░░ 62%`，绿黄红三色预警，超过 80% 疯狂闪烁逼你 compact |
+| **🎵 Symphony 模式** | 四乐章编程纪律：读谱→排练→作曲→终曲，10 项自检清单，写了不像你写的 |
+| **🧠 Ultracode** | 多 Agent 编排，`Workflow` 工具跑 JS 脚本，双栏监控面板 |
+| **📦 Artifacts** | HTML 上传到公开 URL，Cloudflare Worker + R2 全开源可自托管 |
+| **🌐 任意 API 协议** | OpenAI / Anthropic / Gemini / Grok / 任意转发站，`/login` 配一下就能用 |
+| **🔧 多模型群控** | Pipe IPC 多实例，LAN 跨机器零配置发现，`Shift+↓` 交互 |
+| **🦀 Peri Code** | Rust 写的 CC 兼容 Agent，树莓派也能跑 |
+| **🎤 Voice Mode** | 语音输入，支持豆包 |
+| **🖥️ Computer Use** | 截图键鼠控制，Chrome 自动化 |
+| **📦 插件市场** | MCP 服务器管理，官方市场，自定义插件 |
+| **💰 Poor Mode** | 穷鬼模式，关记忆提取省 Token |
 
-| 特性                        | 说明                                                                                                                         | 文档                                                                                                                                      |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **🎯 Goal 持续驱动**        | `/goal <objective>` 设定目标后，自动跨轮驱动 agent 直至完成；带 token budget、completion/blocked audit、`pause`/`resume`/`continue`/`clear` 子命令，网络中断自动暂停 | 源码 [`commands/goal/`](./src/commands/goal/) · [`services/goal/`](./src/services/goal/)                                                  |
-| **📦 Artifacts（HTML 上传）** | 复刻 Anthropic 官方 Artifacts：模型把 HTML/数据看板/报告上传到公开 URL（7d/30d 自动过期），`/artifacts` 命令集中管理，Cloudflare Worker + R2 完全开源、可自托管 | [8 小时复刻报告](./docs/blog/2026-06-20-cloud-artifacts-8h-recap.md) · [在线 demo](https://cloud-artifacts.deepseek-code.win/30d/c2jfwi3E-y3fTZ1ors-KE.html) |
-| **🧠 Ultracode 多 Agent 编排** | `/ultracode` 注入 workflow 编排手册 + `Workflow` 工具跑确定性 JS 脚本（`agent`/`pipeline`/`parallel`/`phase`）+ `/workflows` 双栏监控面板；支持 journal 重放、token budget、并发 cap | [文档](https://ccb.agent-aura.top/docs/features/workflow-scripts)                                                                         |
-| **Claude 群控技术**         | Pipe IPC 多实例协作：同机 main/sub 自动编排 + LAN 跨机器零配置发现与通讯，`/pipes` 选择面板 + `Shift+↓` 交互 + 消息广播路由 | [Pipe IPC](https://ccb.agent-aura.top/docs/features/uds-inbox) / [LAN](https://ccb.agent-aura.top/docs/features/lan-pipes)                |
-| **ACP 协议一等一支持**      | 支持接入 Zed、Cursor 等 IDE，支持会话恢复、Skills、权限桥接                                                                  | [文档](https://ccb.agent-aura.top/docs/features/acp-zed)                                                                                  |
-| **Remote Control 私有部署** | Docker 自托管远程界面, 可以手机上看 CC                                                                                       | [文档](https://ccb.agent-aura.top/docs/features/remote-control-self-hosting)                                                              |
-| **Langfuse 监控**           | 企业级 Agent 监控, 可以清晰看到每次 agent loop 细节, 可以一键转化为数据集                                                    | [文档](https://ccb.agent-aura.top/docs/features/langfuse-monitoring)                                                                      |
-| **Web Search**              | 内置网页搜索工具, 支持 bing 和 brave 搜索                                                                                    | [文档](https://ccb.agent-aura.top/docs/features/web-browser-tool)                                                                         |
-| **Poor Mode**               | 穷鬼模式，关闭记忆提取和键入建议,大幅度减少并发请求                                                                          | /poor 可以开关                                                                                                                            |
-| **Channels 频道通知**       | MCP 服务器推送外部消息到会话（飞书/Slack/Discord/微信等），`--channels plugin:name@marketplace` 启用                         | [文档](https://ccb.agent-aura.top/docs/features/channels)                                                                                 |
-| **自定义模型供应商**        | OpenAI/Anthropic/Gemini/Grok 兼容  (`/login`)                                                                                          | [文档](https://ccb.agent-aura.top/docs/features/all-features-guide)                                                                        |
-| Voice Mode                  | 语音输入，支持豆包语言输入（`/voice doubao`）                                                                   | [文档](https://ccb.agent-aura.top/docs/features/voice-mode)                                                                               |
-| Computer Use                | 屏幕截图、键鼠控制                                                                                                           | [文档](https://ccb.agent-aura.top/docs/features/computer-use)                                                                             |
-| Chrome Use                  | 浏览器自动化、表单填写、数据抓取                                                                                             | [自托管](https://ccb.agent-aura.top/docs/features/chrome-use-mcp) [原生版](https://ccb.agent-aura.top/docs/features/claude-in-chrome-mcp) |
-| Sentry                      | 企业级错误追踪                                                                                                               | [文档](https://ccb.agent-aura.top/docs/internals/sentry-setup)                                                                            |
-| GrowthBook                  | 企业级特性开关                                                                                                               | [文档](https://ccb.agent-aura.top/docs/internals/growthbook-adapter)                                                                      |
-| /dream 记忆整理             | 自动整理和优化记忆文件                                                                                                       | [文档](https://ccb.agent-aura.top/docs/features/auto-dream)                                                                               |
+- 🚀 [别 b 了，怎么启动](#-快速开始)
+- 🐛 [程序又崩了，怎么调](#vs-code-调试)
+- 📖 [想学写代码，教我](#teach-me-学习项目)
 
-- 🚀 [想要启动项目](#-快速开始源码版)
-- 🐛 [想要调试项目](#vs-code-调试)
-- 📖 [想要学习项目](#teach-me-学习项目)
+## ⚡ 快速开始
 
-## ⚡ 快速开始(安装版)
+### npm 全局安装（推荐，省心）
 
-不用克隆仓库, 从 NPM 下载后, 直接使用
-
-```sh
-npm i -g deepseek-code
-
-# bun 安装比较多问题, 推荐 npm 装
-# bun  i -g deepseek-code
-# bun pm -g trust deepseek-code @deepseek-code/mcp-chrome-bridge
-
-ccb # 以 nodejs 打开 DeepSeek Code
-ccb-bun # 以 bun 形态打开
-ccb update # 更新到最新版本
-CLAUDE_BRIDGE_BASE_URL=https://remote-control.deepseek-code.win/ CLAUDE_BRIDGE_OAUTH_TOKEN=test-my-key ccb --remote-control # 我们有自部署的远程控制
+```powershell
+npm install -g deepseek-dsc
+dsc
 ```
 
-> **安装/更新失败？** 先 `npm rm -g deepseek-code` 清理旧版本，再 `npm i -g deepseek-code@latest`。仍失败则指定版本号：`npm i -g deepseek-code@<版本号>`
+### 从源码跑（适合爱折腾的）
+
+```bash
+git clone https://github.com/xjwm5685-ui/deepseek-code.git
+cd deepseek-code
+bun install
+bun run dev
+```
+
+> 安装/更新失败？先 `npm rm -g deepseek-dsc` 清理，再重试
 
 ## ⚡ 快速开始(源码版)
 
