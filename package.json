@@ -1,6 +1,6 @@
 {
   "name": "deepseek-dsc",
-  "version": "2.8.7",
+  "version": "2.8.8",
   "description": "DeepSeek Code CLI — interactive AI coding assistant in the terminal",
   "type": "module",
   "author": "deepseek-code <deepseek-code@proton.me>",
@@ -24,9 +24,9 @@
     "bun": ">=1.3.0"
   },
   "bin": {
-    "dsc": "dist/cli-node.js",
-    "dsc-bun": "dist/cli-bun.js",
-    "deepseek-code": "dist/cli-node.js"
+    "dsc": "dist/cli-bun.js",
+    "dsc-node": "dist/cli-node.js",
+    "deepseek-code": "dist/cli-bun.js"
   },
   "workspaces": [
     "packages/*",
@@ -41,12 +41,13 @@
   ],
   "scripts": {
     "build": "bun run build.ts",
+    "build:node": "bun run build.ts --no-splitting",
     "build:vite": "vite build && bun run scripts/post-build.ts",
     "build:vite:only": "vite build",
     "build:bun": "bun run build.ts",
     "dev": "bun run scripts/dev.ts",
     "dev:inspect": "bun run scripts/dev-debug.ts",
-    "prepublishOnly": "bun run build.ts",
+    "prepublishOnly": "bun run build.ts --no-splitting",
     "lint": "biome lint .",
     "lint:fix": "biome lint --fix .",
     "format": "biome format --write .",
