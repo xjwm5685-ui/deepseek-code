@@ -32,12 +32,12 @@ import {
 import type {
   AgentDefinition,
   AgentDefinitionsResult,
-} from '@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js'
-import { SKILL_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/SkillTool/constants.js'
+} from '@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js'
+import { SKILL_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/SkillTool/constants.js'
 import {
   getLimitedSkillToolCommands,
   getSkillToolInfo as getSlashCommandInfo,
-} from '@claude-code-best/builtin-tools/tools/SkillTool/prompt.js'
+} from '@deepseek-code/builtin-tools/tools/SkillTool/prompt.js'
 import type {
   AssistantMessage,
   AttachmentMessage,
@@ -47,7 +47,7 @@ import type {
   UserMessage,
 } from '../types/message.js'
 import { toolToAPISchema } from './api.js'
-import { filterInjectedMemoryFiles, getMemoryFiles } from './claudemd.js'
+import { filterInjectedMemoryFiles, getMemoryFiles } from './deepseekmd.js'
 import { getContextWindowForModel } from './context.js'
 import { getCwd } from './cwd.js'
 import { logForDebugging } from './debug.js'
@@ -323,25 +323,25 @@ async function countSystemTokens(
 
 async function countMemoryFileTokens(): Promise<{
   memoryFileDetails: MemoryFile[]
-  claudeMdTokens: number
+  deepseekmdTokens: number
 }> {
   // Simple mode disables CLAUDE.md loading, so don't report tokens for them
   if (isEnvTruthy(process.env.CLAUDE_CODE_SIMPLE)) {
-    return { memoryFileDetails: [], claudeMdTokens: 0 }
+    return { memoryFileDetails: [], deepseekmdTokens: 0 }
   }
 
   const memoryFilesData = filterInjectedMemoryFiles(await getMemoryFiles())
   const memoryFileDetails: MemoryFile[] = []
-  let claudeMdTokens = 0
+  let deepseekmdTokens = 0
 
   if (memoryFilesData.length < 1) {
     return {
       memoryFileDetails: [],
-      claudeMdTokens: 0,
+      deepseekmdTokens: 0,
     }
   }
 
-  const claudeMdTokenCounts = await Promise.all(
+  const deepseekmdTokenCounts = await Promise.all(
     memoryFilesData.map(async file => {
       const tokens = await countTokensWithFallback(
         [{ role: 'user', content: file.content }],
@@ -352,8 +352,8 @@ async function countMemoryFileTokens(): Promise<{
     }),
   )
 
-  for (const { file, tokens } of claudeMdTokenCounts) {
-    claudeMdTokens += tokens
+  for (const { file, tokens } of deepseekmdTokenCounts) {
+    deepseekmdTokens += tokens
     memoryFileDetails.push({
       path: file.path,
       type: file.type,
@@ -361,7 +361,7 @@ async function countMemoryFileTokens(): Promise<{
     })
   }
 
-  return { claudeMdTokens, memoryFileDetails }
+  return { deepseekmdTokens, memoryFileDetails }
 }
 
 async function countBuiltInToolTokens(
@@ -389,7 +389,7 @@ async function countBuiltInToolTokens(
   // Check if tool search is enabled
   const { isSearchExtraToolsEnabled } = await import('./searchExtraTools.js')
   const { isDeferredTool } = await import(
-    '@claude-code-best/builtin-tools/tools/SearchExtraToolsTool/prompt.js'
+    '@deepseek-code/builtin-tools/tools/SearchExtraToolsTool/prompt.js'
   )
   const isDeferred = await isSearchExtraToolsEnabled(
     model ?? '',
@@ -675,7 +675,7 @@ export async function countMcpToolTokens(
   // isSearchExtraToolsEnabled handles threshold calculation internally for TstAuto mode
   const { isSearchExtraToolsEnabled } = await import('./searchExtraTools.js')
   const { isDeferredTool } = await import(
-    '@claude-code-best/builtin-tools/tools/SearchExtraToolsTool/prompt.js'
+    '@deepseek-code/builtin-tools/tools/SearchExtraToolsTool/prompt.js'
   )
 
   const isDeferred = await isSearchExtraToolsEnabled(
@@ -971,7 +971,7 @@ export async function analyzeContextUsage(
   // Critical operations that should not fail due to skills
   const [
     { systemPromptTokens, systemPromptSections },
-    { claudeMdTokens, memoryFileDetails },
+    { deepseekmdTokens, memoryFileDetails },
     {
       builtInToolTokens,
       deferredBuiltinDetails,
@@ -1092,10 +1092,10 @@ export async function analyzeContextUsage(
   }
 
   // Memory files after custom agents
-  if (claudeMdTokens > 0) {
+  if (deepseekmdTokens > 0) {
     cats.push({
       name: 'Memory files',
-      tokens: claudeMdTokens,
+      tokens: deepseekmdTokens,
       color: 'claude',
     })
   }

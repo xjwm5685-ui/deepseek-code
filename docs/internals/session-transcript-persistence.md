@@ -1,6 +1,6 @@
 # JSONL Transcript 会话持久化与恢复机制
 
-本文梳理 Claude Code 基于 JSONL transcript 的会话持久化、恢复、错误恢复、上下文压缩、分支、subagent、fork agent 和 remote agent 逻辑。
+本文梳理 DeepSeek Code 基于 JSONL transcript 的会话持久化、恢复、错误恢复、上下文压缩、分支、subagent、fork agent 和 remote agent 逻辑。
 
 这不是按文件罗列的源码笔记，而是一份机制手册：先建立心智模型，再看数据结构、生命周期、异常路径和源码入口。
 
@@ -16,7 +16,7 @@
 
 ## 总览
 
-Claude Code 的本地会话核心是 append-only JSONL。每一行是一个 `Entry`，但恢复时不会按文件顺序重放整个文件，而是：
+DeepSeek Code 的本地会话核心是 append-only JSONL。每一行是一个 `Entry`，但恢复时不会按文件顺序重放整个文件，而是：
 
 1. 把 transcript message 放入 `uuid -> message` map。
 2. 把 metadata entry 放入各自 map 或数组。

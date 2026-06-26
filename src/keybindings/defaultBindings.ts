@@ -5,7 +5,7 @@ import { getPlatform } from '../utils/platform.js'
 import type { KeybindingBlock } from './types.js'
 
 /**
- * Default keybindings that match current Claude Code behavior.
+ * Default keybindings that match current DeepSeek Code behavior.
  * These are loaded first, then user keybindings.json overrides them.
  */
 
@@ -66,7 +66,8 @@ export const DEFAULT_BINDINGS: KeybindingBlock[] = [
       escape: 'chat:cancel',
       // ctrl+x chord prefix avoids shadowing readline editing keys (ctrl+a/b/e/f/...).
       'ctrl+x ctrl+k': 'chat:killAgents',
-      [MODE_CYCLE_KEY]: 'chat:cycleMode',
+      [MODE_CYCLE_KEY]: 'chat:cycleCCBMode',
+      'ctrl+shift+tab': 'chat:cycleMode',
       'meta+p': 'chat:modelPicker',
       'meta+o': 'chat:fastMode',
       'meta+t': 'chat:thinkingToggle',

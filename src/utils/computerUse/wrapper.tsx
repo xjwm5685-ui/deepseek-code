@@ -252,8 +252,8 @@ export function buildSessionContext(): ComputerUseSessionContext {
         });
         tuc().sendOSNotification?.({
           message: escRegistered
-            ? 'Claude is using your computer · press Esc to stop'
-            : 'Claude is using your computer · press Ctrl+C to stop',
+            ? 'DeepSeek Code is using your computer · press Esc to stop'
+            : 'DeepSeek Code is using your computer · press Ctrl+C to stop',
           notificationType: 'computer_use_enter',
         });
       }

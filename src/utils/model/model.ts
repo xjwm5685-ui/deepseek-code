@@ -560,7 +560,7 @@ export function parseUserSpecifiedModel(
   }
 
   // Opus 4/4.1 are no longer available on the first-party API (same as
-  // Claude.ai) — silently remap to the current Opus default. The 'opus'
+  // DeepSeek AI) — silently remap to the current Opus default. The 'opus'
   // alias resolves to the current default Opus (4.7), so the only users
   // on these explicit strings pinned them in settings/env/--model/SDK
   // before 4.5 launched. 3P providers may not yet have 4.6/4.7 capacity,

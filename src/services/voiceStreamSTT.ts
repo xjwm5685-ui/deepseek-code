@@ -3,7 +3,7 @@
 // Only reachable in ant builds (gated by feature('VOICE_MODE') in useVoice.ts import).
 //
 // Connects to Anthropic's voice_stream WebSocket endpoint using the same
-// OAuth credentials as Claude Code.  The endpoint uses conversation_engine
+// OAuth credentials as DeepSeek Code.  The endpoint uses conversation_engine
 // backed models for speech-to-text.  Designed for hold-to-talk: hold the
 // keybinding to record, release to stop and submit.
 //
@@ -96,8 +96,8 @@ type VoiceStreamMessage =
 // ─── Availability ──────────────────────────────────────────────────────
 
 export function isVoiceStreamAvailable(): boolean {
-  // voice_stream uses the same OAuth as Claude Code — available when the
-  // user is authenticated with Anthropic (Claude.ai subscriber or has
+  // voice_stream uses the same OAuth as DeepSeek Code — available when the
+  // user is authenticated with Anthropic (DeepSeek AI subscriber or has
   // valid OAuth tokens).
   if (!isAnthropicAuthEnabled()) {
     return false
@@ -123,11 +123,11 @@ export async function connectVoiceStream(
 
   // voice_stream is a private_api route, but /api/ws/ is also exposed on
   // the api.anthropic.com listener (service_definitions.yaml private-api:
-  // visibility.external: true). We target that host instead of claude.ai
-  // because the claude.ai CF zone uses TLS fingerprinting and challenges
+  // visibility.external: true). We target that host instead of DeepSeek AI
+  // because the DeepSeek AI CF zone uses TLS fingerprinting and challenges
   // non-browser clients (anthropics/claude-code#34094). Same private-api
   // pod, same OAuth Bearer auth — just a CF zone that doesn't block us.
-  // Desktop dictation still uses claude.ai (Swift URLSession has a
+  // Desktop dictation still uses DeepSeek AI (Swift URLSession has a
   // browser-class JA3 fingerprint, so CF lets it through).
   const wsBaseUrl =
     process.env.VOICE_STREAM_BASE_URL ||

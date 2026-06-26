@@ -1,17 +1,17 @@
 import React, { useCallback } from 'react';
 import { logEvent } from 'src/services/analytics/index.js';
 import { Box, Dialog, Link, Text } from '@anthropic/ink';
-import type { ExternalClaudeMdInclude } from '../utils/claudemd.js';
+import type { ExternaldeepseekmdInclude } from '../utils/deepseekmd.js';
 import { saveCurrentProjectConfig } from '../utils/config.js';
 import { Select } from './CustomSelect/index.js';
 
 type Props = {
   onDone(): void;
   isStandaloneDialog?: boolean;
-  externalIncludes?: ExternalClaudeMdInclude[];
+  externalIncludes?: ExternaldeepseekmdInclude[];
 };
 
-export function ClaudeMdExternalIncludesDialog({
+export function deepseekmdExternalIncludesDialog({
   onDone,
   isStandaloneDialog,
   externalIncludes,
@@ -28,15 +28,15 @@ export function ClaudeMdExternalIncludesDialog({
         // Mark that we've shown the dialog but it was declined
         saveCurrentProjectConfig(current => ({
           ...current,
-          hasClaudeMdExternalIncludesApproved: false,
-          hasClaudeMdExternalIncludesWarningShown: true,
+          hasdeepseekmdExternalIncludesApproved: false,
+          hasdeepseekmdExternalIncludesWarningShown: true,
         }));
       } else {
         logEvent('tengu_claude_md_external_includes_dialog_accepted', {});
         saveCurrentProjectConfig(current => ({
           ...current,
-          hasClaudeMdExternalIncludesApproved: true,
-          hasClaudeMdExternalIncludesWarningShown: true,
+          hasdeepseekmdExternalIncludesApproved: true,
+          hasdeepseekmdExternalIncludesWarningShown: true,
         }));
       }
 
@@ -75,7 +75,7 @@ export function ClaudeMdExternalIncludesDialog({
       )}
 
       <Text dimColor>
-        Important: Only use Claude Code with files you trust. Accessing untrusted files may pose security risks{' '}
+        Important: Only use DeepSeek Code with files you trust. Accessing untrusted files may pose security risks{' '}
         <Link url="https://code.claude.com/docs/en/security" />{' '}
       </Text>
 

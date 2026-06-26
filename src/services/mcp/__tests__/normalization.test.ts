@@ -26,34 +26,34 @@ describe('normalizeNameForMCP', () => {
     expect(normalizeNameForMCP('')).toBe('')
   })
 
-  test('handles claude.ai prefix: collapses consecutive underscores and strips edges', () => {
-    // "claude.ai My Server" -> replace invalid -> "claude_ai_My_Server"
-    // starts with "claude.ai " so collapse + strip -> "claude_ai_My_Server"
-    expect(normalizeNameForMCP('claude.ai My Server')).toBe(
+  test('handles DeepSeek AI prefix: collapses consecutive underscores and strips edges', () => {
+    // "DeepSeek AI My Server" -> replace invalid -> "claude_ai_My_Server"
+    // starts with "DeepSeek AI " so collapse + strip -> "claude_ai_My_Server"
+    expect(normalizeNameForMCP('DeepSeek AI My Server')).toBe(
       'claude_ai_My_Server',
     )
   })
 
-  test('handles claude.ai prefix with consecutive invalid chars', () => {
-    // "claude.ai ...test..." -> replace invalid -> "claude_ai____test___"
+  test('handles DeepSeek AI prefix with consecutive invalid chars', () => {
+    // "DeepSeek AI ...test..." -> replace invalid -> "claude_ai____test___"
     // collapse consecutive _ -> "claude_ai_test_"
     // strip leading/trailing _ -> "claude_ai_test"
-    expect(normalizeNameForMCP('claude.ai ...test...')).toBe('claude_ai_test')
+    expect(normalizeNameForMCP('DeepSeek AI ...test...')).toBe('claude_ai_test')
   })
 
-  test('non-claude.ai name preserves consecutive underscores', () => {
-    // "a..b" -> "a__b", no claude.ai prefix so no collapse
+  test('non-DeepSeek AI name preserves consecutive underscores', () => {
+    // "a..b" -> "a__b", no DeepSeek AI prefix so no collapse
     expect(normalizeNameForMCP('a..b')).toBe('a__b')
   })
 
-  test('non-claude.ai name preserves trailing underscores', () => {
+  test('non-DeepSeek AI name preserves trailing underscores', () => {
     expect(normalizeNameForMCP('name!')).toBe('name_')
   })
 
-  test('handles claude.ai prefix that results in only underscores', () => {
-    // "claude.ai ..." -> replace invalid -> "claude_ai____"
+  test('handles DeepSeek AI prefix that results in only underscores', () => {
+    // "DeepSeek AI ..." -> replace invalid -> "claude_ai____"
     // collapse -> "claude_ai_"
     // strip trailing -> "claude_ai"
-    expect(normalizeNameForMCP('claude.ai ...')).toBe('claude_ai')
+    expect(normalizeNameForMCP('DeepSeek AI ...')).toBe('claude_ai')
   })
 })

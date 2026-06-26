@@ -360,7 +360,7 @@
 ### 4.1 [critical] usage_update 非稳定 v1 SessionUpdate 判别器 🔶 已撤销原修复 (2026-06-19)
 
 - 位置: `src/services/acp/bridge/forwarding.ts` (forwardSessionUpdates, 'result' 情况)
-- 规范要求: ACP v1 稳定版 schema schema.json:2942-3108 定义 SessionUpdate 为通过 propertyName `sessionUpdate` 进行 oneOf 判别,包含 10 个有效常量: `user_message_chunk`、`agent_message_chunk`、`agent_thought_chunk`、`tool_call`、`tool_call_update`、`plan`、`available_commands_update`、`current_mode_update`、`config_option_update`、`session_info_update`。`usage_update` 不在 v1 稳定版规范中。（Claude Code 捆绑的 SDK schema v0.19.0 第 5789 行将其标记为 "UNSTABLE——此功能尚未包含在规范中,随时可能被删除或更改"。）
+- 规范要求: ACP v1 稳定版 schema schema.json:2942-3108 定义 SessionUpdate 为通过 propertyName `sessionUpdate` 进行 oneOf 判别,包含 10 个有效常量: `user_message_chunk`、`agent_message_chunk`、`agent_thought_chunk`、`tool_call`、`tool_call_update`、`plan`、`available_commands_update`、`current_mode_update`、`config_option_update`、`session_info_update`。`usage_update` 不在 v1 稳定版规范中。（DeepSeek Code 捆绑的 SDK schema v0.19.0 第 5789 行将其标记为 "UNSTABLE——此功能尚未包含在规范中,随时可能被删除或更改"。）
 - **决策回滚**: 原修复（2026-06-19 早期）完全移除了 `usage_update` 以追求严格 v1 stable 合规。但现实中所有主流 ACP 客户端（Zed、Cursor 等）实现的是 unstable spec,移除 `usage_update` 后客户端 context 使用量一律显示 `0/0`,严重破坏 UX。鉴于:
   - SDK 已包含 `UsageUpdate` 类型(`sessionUpdate: 'usage_update'`, 字段 `used` + `size` + 可选 `cost`)
   - `PromptResponse.usage` 也已由 SDK 在根部支持(UNSTABLE 但被广泛实现)
@@ -378,7 +378,7 @@
 - 位置: `src/services/acp/bridge.ts` `toAcpNotifications` 的 `tool_use` 分支 alreadyCached 路径
 - 规范要求: schema.json:3525-3548 ToolCallStatus 枚举为 `pending`、`in_progress`、`completed`、`failed`。tool-calls.mdx:76-91 ('Updating') 文档化了一个生命周期,其中 Agent 在工具实际运行时报告 `status: 'in_progress'`。v1 规范称工具 "在其生命周期中会经历不同状态"。
 - 修复: 当同一 tool_use 块被第二次遇到时(streaming `content_block_start` 首次 + assistant 完整消息回放第二次),发 `tool_call_update` with `status: 'in_progress'`。此时语义为"input 已收齐,即将执行"。完整 ToolCallStatus 生命周期现在是 pending → in_progress → completed|failed。
-- 修复建议: 当 Claude Code 知道工具开始执行时,发出一个中间的 tool_call_update:
+- 修复建议: 当 DeepSeek Code 知道工具开始执行时,发出一个中间的 tool_call_update:
 
   ~~~ts
   { sessionUpdate: 'tool_call_update', toolCallId, status: 'in_progress' }
@@ -844,7 +844,7 @@
 | §4.4 Bash _meta 键未命名空间化 | 非规范违规（_meta 允许任意附加键）；仅命名风格不一致。 |
 | §5.4 reject_always 未提供 | PermissionOptionKind 四变体为推荐而非 MUST；REPL 现有交互流不支持持久的拒绝记忆。列为 P2。 |
 | §5.7 ExitPlanMode optionId 与 session-mode 碰撞 | optionId 是 free-form 字符串,使用模式 id 作为值是合法扩展；ExitPlanMode 映射为 switch_mode,语义可辨。 |
-| §5.8 rawInput 浅克隆 | Schema-valid,仅在嵌套对象被后续突变时才有问题；Claude Code 工具 input 通常不可变。低风险。 |
+| §5.8 rawInput 浅克隆 | Schema-valid,仅在嵌套对象被后续突变时才有问题；DeepSeek Code 工具 input 通常不可变。低风险。 |
 | §6.2 响应中携带 models 字段 | 为 SDK draft 类型驱动,严格 v1 Client 会忽略；若客户端使用 SDK 同版本,则 models 是有用的扩展字段。优先移除但非阻断。 |
 | §6.4 value 类型守卫冗余 | 不影响合规性,仅代码质量问题。 |
 | §7.4 image url 占位字段命名 | 实现合规,仅为字段映射文档。 |

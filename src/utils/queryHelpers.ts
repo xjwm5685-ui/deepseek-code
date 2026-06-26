@@ -7,14 +7,14 @@ import type { SDKMessage } from 'src/entrypoints/agentSdkTypes.js'
 import type { CanUseToolFn } from '../hooks/useCanUseTool.js'
 import { runTools } from '../services/tools/toolOrchestration.js'
 import { findToolByName, type Tool, type Tools } from '../Tool.js'
-import { BASH_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/BashTool/toolName.js'
-import { FILE_EDIT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileEditTool/constants.js'
-import type { Input as FileReadInput } from '@claude-code-best/builtin-tools/tools/FileReadTool/FileReadTool.js'
+import { BASH_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/BashTool/toolName.js'
+import { FILE_EDIT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileEditTool/constants.js'
+import type { Input as FileReadInput } from '@deepseek-code/builtin-tools/tools/FileReadTool/FileReadTool.js'
 import {
   FILE_READ_TOOL_NAME,
   FILE_UNCHANGED_STUB,
-} from '@claude-code-best/builtin-tools/tools/FileReadTool/prompt.js'
-import { FILE_WRITE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileWriteTool/prompt.js'
+} from '@deepseek-code/builtin-tools/tools/FileReadTool/prompt.js'
+import { FILE_WRITE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileWriteTool/prompt.js'
 import type { Message } from '../types/message.js'
 import type { OrphanedPermission } from '../types/textInputTypes.js'
 import { logForDebugging } from './debug.js'
@@ -178,7 +178,7 @@ export function* normalizeMessage(message: Message): Generator<SDKMessage> {
         progressData.type === 'powershell_progress'
       ) {
         // Filter bash progress to send only one per minute
-        // Only emit for Claude Code Remote for now
+        // Only emit for DeepSeek Code Remote for now
         if (
           !isEnvTruthy(process.env.CLAUDE_CODE_REMOTE) &&
           !process.env.CLAUDE_CODE_CONTAINER_ID

@@ -469,7 +469,7 @@ export async function teleportResumeCodeSession(
         error_type: 'no_access_token' as AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS,
       });
       throw new Error(
-        'Claude Code web sessions require authentication with a Claude.ai account. API key authentication is not sufficient. Please run /login to authenticate, or check your authentication status with /status.',
+        'DeepSeek Code web sessions require authentication with a DeepSeek AI account. API key authentication is not sufficient. Please run /login to authenticate, or check your authentication status with /status.',
       );
     }
 
@@ -599,7 +599,7 @@ async function handleTeleportPrerequisites(root: Root, errorsToIgnore?: Set<Tele
 }
 
 /**
- * Creates a remote Claude.ai session with error handling and UI feedback.
+ * Creates a remote DeepSeek AI session with error handling and UI feedback.
  * Shows prerequisite error dialog in the existing root if needed.
  * @param root The existing Ink root to render dialogs into
  * @param description The description/prompt for the new session (null for no initial prompt)
@@ -694,7 +694,7 @@ export async function teleportFromSessionsAPI(
       });
       throw new TeleportOperationError(
         `${sessionId} not found.`,
-        `${sessionId} not found.\n${chalk.dim('Run /status in Claude Code to check your account.')}`,
+        `${sessionId} not found.\n${chalk.dim('Run /status in DeepSeek Code to check your account.')}`,
       );
     }
 
@@ -803,7 +803,7 @@ export async function pollRemoteSessionEvents(
 }
 
 /**
- * Creates a remote Claude.ai session using the Sessions API.
+ * Creates a remote DeepSeek AI session using the Sessions API.
  *
  * Two source modes:
  * - GitHub (default): backend clones from the repo's origin URL. Requires a

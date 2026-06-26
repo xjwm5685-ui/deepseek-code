@@ -1,16 +1,58 @@
 import memoize from 'lodash-es/memoize.js'
 import { homedir } from 'os'
 import { join } from 'path'
+import { existsSync, mkdirSync } from 'fs'
 
-// Memoized: 150+ callers, many on hot paths. Keyed off CLAUDE_CONFIG_DIR so
-// tests that change the env var get a fresh value without explicit cache.clear.
+/**
+ * Get the DeepSeek Code config directory (~/.DeepSeek).
+ * Creates the directory if it doesn't exist.
+ */
+export const getDeepSeekConfigHomeDir = memoize((): string => {
+  const dir = join(homedir(), '.DeepSeek').normalize('NFC')
+  try {
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true })
+    }
+  } catch {
+    // Swallow — the dir will be created later if needed
+  }
+  return dir
+})
+
+/**
+ * Get the config home directory.
+ * Resolution order:
+ * 1. DEEPSEEK_CONFIG_DIR env var (explicit override)
+ * 2. ~/.DeepSeek/ (DeepSeek Code native config)
+ * 3. CLAUDE_CONFIG_DIR env var (DeepSeek Code override)
+ * 4. ~/.claude/ (DeepSeek Code legacy config, fallback)
+ *
+ * The user can place a config.json in ~/.DeepSeek/ to set up API keys.
+ * If ~/.DeepSeek/ doesn't exist or has no config, falls back to ~/.claude/.
+ */
 export const getClaudeConfigHomeDir = memoize(
   (): string => {
-    return (
+    const deepseekDir =
+      process.env.DEEPSEEK_CONFIG_DIR ?? join(homedir(), '.DeepSeek')
+    const claudeDir =
       process.env.CLAUDE_CONFIG_DIR ?? join(homedir(), '.claude')
-    ).normalize('NFC')
+    const deepseekNormalized = deepseekDir.normalize('NFC')
+    const claudeNormalized = claudeDir.normalize('NFC')
+
+    // Check if DeepSeek config exists and has a config file
+    try {
+      if (existsSync(deepseekNormalized)) {
+        // DeepSeek dir exists — use it
+        return deepseekNormalized
+      }
+    } catch {
+      // ignore
+    }
+
+    // Fall back to DeepSeek Code config
+    return claudeNormalized
   },
-  () => process.env.CLAUDE_CONFIG_DIR,
+  () => process.env.DEEPSEEK_CONFIG_DIR ?? process.env.CLAUDE_CONFIG_DIR,
 )
 
 export function getTeamsDir(): string {
@@ -123,7 +165,7 @@ export function isRunningOnHomespace(): boolean {
 }
 
 /**
- * Conservative check for whether Claude Code is running inside a protected
+ * Conservative check for whether DeepSeek Code is running inside a protected
  * (privileged or ASL3+) COO namespace or cluster.
  *
  * Conservative means: when signals are ambiguous, assume protected. We would

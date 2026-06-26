@@ -509,7 +509,7 @@ export function useVoice({
           } else if (!hadAudioSignal) {
             // Distinguish silent mic (capture issue) from speech not recognized.
             onErrorRef.current?.(
-              'No audio detected from microphone. Check that the correct input device is selected and that Claude Code has microphone access.',
+              'No audio detected from microphone. Check that the correct input device is selected and that DeepSeek Code has microphone access.',
             )
           } else {
             onErrorRef.current?.('No speech detected.')
@@ -1006,7 +1006,7 @@ export function useVoice({
             '[voice] Failed to connect to voice_stream (no OAuth token?)',
           )
           onErrorRef.current?.(
-            'Voice mode requires a Claude.ai account. Please run /login to sign in.',
+            'Voice mode requires a DeepSeek AI account. Please run /login to sign in.',
           )
           // Clear the audio buffer on failure
           audioBuffer.length = 0

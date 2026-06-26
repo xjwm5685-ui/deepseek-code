@@ -32,7 +32,7 @@ import type {
 } from './types.js'
 
 /**
- * Check if the user has Claude.ai authentication scope
+ * Check if the user has DeepSeek AI authentication scope
  * @private Only call this if you're OAuth / auth related code!
  */
 export function shouldUseClaudeAIAuth(scopes: string[] | undefined): boolean {

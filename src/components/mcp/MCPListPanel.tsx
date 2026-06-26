@@ -244,11 +244,11 @@ export function MCPListPanel({
             );
           })}
 
-          {/* Claude.ai servers section */}
+          {/* DeepSeek AI servers section */}
           {claudeAiServers.length > 0 && (
             <Box flexDirection="column" marginBottom={1}>
               <Box paddingLeft={2}>
-                <Text bold>claude.ai</Text>
+                <Text bold>DeepSeek AI</Text>
               </Box>
               {claudeAiServers.map(server => renderServerItem(server))}
             </Box>

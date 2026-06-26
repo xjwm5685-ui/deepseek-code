@@ -5,17 +5,17 @@ import memoize from 'lodash-es/memoize.js'
 import { homedir, tmpdir } from 'os'
 import { join, normalize, posix, sep } from 'path'
 import { hasAutoMemPathOverride, isAutoMemPath } from 'src/memdir/paths.js'
-import { isAgentMemoryPath } from '@claude-code-best/builtin-tools/tools/AgentTool/agentMemory.js'
+import { isAgentMemoryPath } from '@deepseek-code/builtin-tools/tools/AgentTool/agentMemory.js'
 import {
   CLAUDE_FOLDER_PERMISSION_PATTERN,
   FILE_EDIT_TOOL_NAME,
   GLOBAL_CLAUDE_FOLDER_PERMISSION_PATTERN,
-} from '@claude-code-best/builtin-tools/tools/FileEditTool/constants.js'
+} from '@deepseek-code/builtin-tools/tools/FileEditTool/constants.js'
 import type { z } from 'zod/v4'
 import { getOriginalCwd, getSessionId } from '../../bootstrap/state.js'
 import { checkStatsigFeatureGate_CACHED_MAY_BE_STALE } from '../../services/analytics/growthbook.js'
 import type { AnyObject, Tool, ToolPermissionContext } from '../../Tool.js'
-import { FILE_READ_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileReadTool/prompt.js'
+import { FILE_READ_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileReadTool/prompt.js'
 import { getCwd } from '../cwd.js'
 import { getClaudeConfigHomeDir } from '../envUtils.js'
 import {
@@ -221,7 +221,7 @@ export function isClaudeSettingsPath(filePath: string): boolean {
   )
 }
 
-// Always ask when Claude Code tries to edit its own config files
+// Always ask when DeepSeek Code tries to edit its own config files
 function isClaudeConfigFilePath(filePath: string): boolean {
   if (isClaudeSettingsPath(filePath)) {
     return true
@@ -319,7 +319,7 @@ export function getClaudeTempDirName(): string {
  * Uses TMPDIR env var if set, otherwise:
  * - On Unix: /tmp/claude-{uid}/ (resolved to /private/tmp/claude-{uid}/ on macOS)
  * - On Windows: {tmpdir}/claude/ (e.g., C:\Users\{user}\AppData\Local\Temp\claude\)
- * This is a per-user temporary directory used by Claude Code for all temp files.
+ * This is a per-user temporary directory used by DeepSeek Code for all temp files.
  *
  * NOTE: We resolve symlinks to ensure this path matches the resolved paths used
  * in permission checks. On macOS, /tmp is a symlink to /private/tmp, so without
@@ -608,7 +608,7 @@ function hasSuspiciousWindowsPathPattern(path: string): boolean {
  * This function performs comprehensive safety checks including:
  * - Suspicious Windows path patterns (NTFS streams, 8.3 names, long path prefixes, etc.)
  * - Claude config files (.claude/settings.json, .claude/commands/, .claude/agents/)
- * - MCP CLI state files (managed internally by Claude Code)
+ * - MCP CLI state files (managed internally by DeepSeek Code)
  * - Dangerous files (.bashrc, .gitconfig, .git/, .vscode/, .idea/, etc.)
  *
  * IMPORTANT: This function checks BOTH the original path AND resolved symlink paths
@@ -1239,7 +1239,7 @@ export function checkWritePermissionForTool<Input extends AnyObject>(
   }
 
   // 1.5. Allow writes to internal editable paths (plan files, scratchpad)
-  // This MUST come before isDangerousFilePathToAutoEdit check since .claude is a dangerous directory
+  // This MUST come before isDangerousFilePathToAutoEdit check since .DeepSeek Code is a dangerous directory
   const absolutePathForEdit = expandPath(path)
   const internalEditResult = checkEditableInternalPath(
     absolutePathForEdit,
@@ -1530,7 +1530,7 @@ export function checkEditableInternalPath(
       const jobsRootForms = getPathsForPermissionCheck(jobsRoot).map(normalize)
       // Hijack guard: every resolved form of the job dir must sit under
       // some resolved form of the jobs root. Resolving both sides handles
-      // the case where ~/.claude is a symlink (e.g. to /data/claude-config).
+      // the case where ~/.DeepSeek Code is a symlink (e.g. to /data/claude-config).
       const isUnderJobsRoot = jobDirForms.every(jd =>
         jobsRootForms.some(jr => jd.startsWith(jr + sep)),
       )

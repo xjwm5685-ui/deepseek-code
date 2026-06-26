@@ -38,7 +38,7 @@ import { useAppState, useSetAppState, useAppStateStore } from '../../state/AppSt
 import { ModelPicker } from '../ModelPicker.js';
 import { modelDisplayString, isOpus1mMergeEnabled } from '../../utils/model/model.js';
 import { isBilledAsExtraUsage } from '../../utils/extraUsage.js';
-import { ClaudeMdExternalIncludesDialog } from '../ClaudeMdExternalIncludesDialog.js';
+import { deepseekmdExternalIncludesDialog } from '../deepseekmdExternalIncludesDialog.js';
 import { ChannelDowngradeDialog, type ChannelDowngradeChoice } from '../ChannelDowngradeDialog.js';
 import { Dialog } from '@anthropic/ink';
 import { Select } from '../CustomSelect/index.js';
@@ -46,10 +46,10 @@ import { OutputStylePicker } from '../OutputStylePicker.js';
 import { LanguagePicker } from '../LanguagePicker.js';
 import {
   type MemoryFileInfo,
-  getExternalClaudeMdIncludes,
+  getExternaldeepseekmdIncludes,
   getMemoryFiles,
-  hasExternalClaudeMdIncludes,
-} from 'src/utils/claudemd.js';
+  hasExternaldeepseekmdIncludes,
+} from 'src/utils/deepseekmd.js';
 import { Byline, KeyboardShortcutHint, useTabHeaderFocus } from '@anthropic/ink';
 import { ConfigurableShortcutHint } from '../ConfigurableShortcutHint.js';
 import { useIsInsideModal } from '../../context/modalContext.js';
@@ -180,7 +180,7 @@ export function Config({
   const showDefaultViewPicker =
     feature('KAIROS') || feature('KAIROS_BRIEF')
       ? (
-          require('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js')
+          require('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js')
         ).isBriefEntitled()
       : false;
   /* eslint-enable @typescript-eslint/no-require-imports */
@@ -250,7 +250,7 @@ export function Config({
   const isFileCheckpointingAvailable = !isEnvTruthy(process.env.CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING);
 
   const memoryFiles = React.use(getMemoryFiles(true)) as MemoryFileInfo[];
-  const shouldShowExternalIncludesToggle = hasExternalClaudeMdIncludes(memoryFiles);
+  const shouldShowExternalIncludesToggle = hasExternaldeepseekmdIncludes(memoryFiles);
 
   const autoUpdaterDisabledReason = getAutoUpdaterDisabledReason();
 
@@ -1084,7 +1084,7 @@ export function Config({
             label: 'External CLAUDE.md includes',
             value: (() => {
               const projectConfig = getCurrentProjectConfig();
-              if (projectConfig.hasClaudeMdExternalIncludesApproved) {
+              if (projectConfig.hasdeepseekmdExternalIncludesApproved) {
                 return 'true';
               } else {
                 return 'false';
@@ -1226,7 +1226,7 @@ export function Config({
     });
     // Check for API key changes
     // On homespace, ANTHROPIC_API_KEY is preserved in process.env for child
-    // processes but ignored by Claude Code itself (see auth.ts).
+    // processes but ignored by DeepSeek Code itself (see auth.ts).
     const effectiveApiKey = isRunningOnHomespace() ? undefined : process.env.ANTHROPIC_API_KEY;
     const initialUsingCustomKey = Boolean(
       effectiveApiKey &&
@@ -1740,12 +1740,12 @@ export function Config({
         </>
       ) : showSubmenu === 'ExternalIncludes' ? (
         <>
-          <ClaudeMdExternalIncludesDialog
+          <deepseekmdExternalIncludesDialog
             onDone={() => {
               setShowSubmenu(null);
               setTabsHidden(false);
             }}
-            externalIncludes={getExternalClaudeMdIncludes(memoryFiles as MemoryFileInfo[])}
+            externalIncludes={getExternaldeepseekmdIncludes(memoryFiles as MemoryFileInfo[])}
           />
           <Text dimColor>
             <Byline>

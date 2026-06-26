@@ -11,7 +11,7 @@ import { getDesktopUpsellConfig } from '../../components/DesktopUpsell/DesktopUp
 import { color } from '@anthropic/ink'
 import { shouldShowOverageCreditUpsell } from '../../components/LogoV2/OverageCreditUpsell.js'
 import { getShortcutDisplay } from '../../keybindings/shortcutFormat.js'
-import { isKairosCronEnabled } from '@claude-code-best/builtin-tools/tools/ScheduleCronTool/prompt.js'
+import { isKairosCronEnabled } from '@deepseek-code/builtin-tools/tools/ScheduleCronTool/prompt.js'
 import { is1PApiCustomer } from '../../utils/auth.js'
 import { countConcurrentSessions } from '../../utils/concurrentSessions.js'
 import { getGlobalConfig } from '../../utils/config.js'
@@ -254,7 +254,7 @@ const externalTips: Tip[] = [
   {
     id: 'prompt-queue',
     content: async () =>
-      'Hit Enter to queue up additional messages while Claude is working.',
+      'Hit Enter to queue up additional messages while DeepSeek Code is working.',
     cooldownSessions: 5,
     async isRelevant() {
       const config = getGlobalConfig()
@@ -354,7 +354,7 @@ const externalTips: Tip[] = [
   {
     id: 'paste-images-mac',
     content: async () =>
-      'Paste images into Claude Code using control+v (not cmd+v!)',
+      'Paste images into DeepSeek Code using control+v (not cmd+v!)',
     cooldownSessions: 10,
     isRelevant: async () => getPlatform() === 'macos',
   },
@@ -434,7 +434,7 @@ const externalTips: Tip[] = [
   {
     id: 'desktop-app',
     content: async () =>
-      'Run Claude Code locally or remotely using the Claude desktop app: clau.de/desktop',
+      'Run DeepSeek Code locally or remotely using the Claude desktop app: clau.de/desktop',
     cooldownSessions: 15,
     isRelevant: async () => getPlatform() !== 'linux',
   },
@@ -442,7 +442,7 @@ const externalTips: Tip[] = [
     id: 'desktop-shortcut',
     content: async (ctx?) => {
       const blue = color('suggestion', ctx?.theme ?? 'dark')
-      return `Continue your session in Claude Code Desktop with ${blue('/desktop')}`
+      return `Continue your session in DeepSeek Code Desktop with ${blue('/desktop')}`
     },
     cooldownSessions: 15,
     isRelevant: async () => {
@@ -463,7 +463,7 @@ const externalTips: Tip[] = [
   {
     id: 'mobile-app',
     content: async () =>
-      '/mobile to use Claude Code from the Claude app on your phone',
+      '/mobile to use DeepSeek Code from the Claude app on your phone',
     cooldownSessions: 15,
     isRelevant: async () => true,
   },
@@ -590,7 +590,7 @@ const externalTips: Tip[] = [
       const claude = color('claude', ctx?.theme ?? 'dark')
       const reward = getCachedReferrerReward()
       return reward
-        ? `Share Claude Code and earn ${claude(formatCreditAmount(reward))} of extra usage · ${claude('/passes')}`
+        ? `Share DeepSeek Code and earn ${claude(formatCreditAmount(reward))} of extra usage · ${claude('/passes')}`
         : `You have free guest passes to share · ${claude('/passes')}`
     },
     cooldownSessions: 3,
@@ -633,7 +633,7 @@ const internalOnlyTips: Tip[] =
   process.env.USER_TYPE === 'ant'
     ? [
         {
-          id: 'important-claudemd',
+          id: 'important-deepseekmd',
           content: async () =>
             '[ANT-ONLY] Use "IMPORTANT:" prefix for must-follow CLAUDE.md rules',
           cooldownSessions: 30,

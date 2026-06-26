@@ -1,5 +1,5 @@
 /**
- * Package manager detection for Claude CLI
+ * Package manager detection for DeepSeek CLI
  */
 
 import { readFile } from 'fs/promises'

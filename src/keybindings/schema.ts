@@ -81,6 +81,7 @@ export const KEYBINDING_ACTIONS = [
   'chat:cancel',
   'chat:killAgents',
   'chat:cycleMode',
+  'chat:cycleCCBMode',
   'chat:modelPicker',
   'chat:fastMode',
   'chat:thinkingToggle',
@@ -234,7 +235,7 @@ export const KeybindingsSchema = lazySchema(() =>
         .describe('Array of keybinding blocks by context'),
     })
     .describe(
-      'Claude Code keybindings configuration. Customize keyboard shortcuts by context.',
+      'DeepSeek Code keybindings configuration. Customize keyboard shortcuts by context.',
     ),
 )
 

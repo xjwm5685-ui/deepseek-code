@@ -145,7 +145,7 @@ import { SpinnerWithVerb, BriefIdleStatus, type SpinnerMode } from '../component
 import { getSystemPrompt } from '../constants/prompts.js';
 import { buildEffectiveSystemPrompt } from '../utils/systemPrompt.js';
 import { getSystemContext, getUserContext } from '../context.js';
-import { getMemoryFiles } from '../utils/claudemd.js';
+import { getMemoryFiles } from '../utils/deepseekmd.js';
 import { startBackgroundHousekeeping } from '../utils/backgroundHousekeeping.js';
 import { getTotalCost, saveCurrentSessionCosts, resetCostState, getStoredSessionCosts } from '../cost-tracker.js';
 import { useCostSummary } from '../costHook.js';
@@ -215,9 +215,9 @@ import {
 import { buildPermissionUpdates } from '../components/permissions/ExitPlanModePermissionRequest/ExitPlanModePermissionRequest.js';
 import { stripDangerousPermissionsForAutoMode } from '../utils/permissions/permissionSetup.js';
 import { getScratchpadDir, isScratchpadEnabled } from '../utils/permissions/filesystem.js';
-import { WEB_FETCH_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/WebFetchTool/prompt.js';
-import { SLEEP_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/SleepTool/prompt.js';
-import { clearSpeculativeChecks } from '@claude-code-best/builtin-tools/tools/BashTool/bashPermissions.js';
+import { WEB_FETCH_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/WebFetchTool/prompt.js';
+import { SLEEP_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/SleepTool/prompt.js';
+import { clearSpeculativeChecks } from '@deepseek-code/builtin-tools/tools/BashTool/bashPermissions.js';
 import type { AutoUpdaterResult } from '../utils/autoUpdater.js';
 import { getGlobalConfig, saveGlobalConfig, getGlobalConfigWriteCount } from '../utils/config.js';
 import { hasConsoleBillingAccess } from '../utils/billing.js';
@@ -251,7 +251,7 @@ import {
   FORK_BOILERPLATE_TAG,
   LOCAL_COMMAND_STDOUT_TAG,
 } from '../constants/xml.js';
-import { FORK_SUBAGENT_TYPE } from '@claude-code-best/builtin-tools/tools/AgentTool/forkSubagent.js';
+import { FORK_SUBAGENT_TYPE } from '@deepseek-code/builtin-tools/tools/AgentTool/forkSubagent.js';
 import { escapeXml } from '../utils/xml.js';
 import type { ThinkingConfig } from '../utils/thinking.js';
 import { gracefulShutdownSync } from '../utils/gracefulShutdown.js';
@@ -287,9 +287,9 @@ import { processSessionStartHooks } from '../utils/sessionStart.js';
 import { executeSessionEndHooks, getSessionEndHookTimeoutMs } from '../utils/hooks.js';
 import { type IDESelection, useIdeSelection } from '../hooks/useIdeSelection.js';
 import { getTools, assembleToolPool } from '../tools.js';
-import type { AgentDefinition } from '@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js';
-import { resolveAgentTools } from '@claude-code-best/builtin-tools/tools/AgentTool/agentToolUtils.js';
-import { resumeAgentBackground } from '@claude-code-best/builtin-tools/tools/AgentTool/resumeAgent.js';
+import type { AgentDefinition } from '@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js';
+import { resolveAgentTools } from '@deepseek-code/builtin-tools/tools/AgentTool/agentToolUtils.js';
+import { resumeAgentBackground } from '@deepseek-code/builtin-tools/tools/AgentTool/resumeAgent.js';
 import { useMainLoopModel } from '../hooks/useMainLoopModel.js';
 import { useAppState, useSetAppState, useAppStateStore } from '../state/AppState.js';
 import type { ContentBlockParam, ContentBlock, ImageBlockParam } from '@anthropic-ai/sdk/resources/messages.mjs';
@@ -321,7 +321,7 @@ import {
 } from '../utils/toolResultStorage.js';
 import { partialCompactConversation } from '../services/compact/compact.js';
 import type { LogOption } from '../types/logs.js';
-import type { AgentColorName } from '@claude-code-best/builtin-tools/tools/AgentTool/agentColorManager.js';
+import type { AgentColorName } from '@deepseek-code/builtin-tools/tools/AgentTool/agentColorManager.js';
 import {
   fileHistoryMakeSnapshot,
   type FileHistoryState,
@@ -476,12 +476,12 @@ import {
   type AutoRunIssueReason,
 } from '../utils/autoRunIssue.js';
 import type { HookProgress } from '../types/hooks.js';
-import { TungstenLiveMonitor } from '@claude-code-best/builtin-tools/tools/TungstenTool/TungstenLiveMonitor.js';
+import { TungstenLiveMonitor } from '@deepseek-code/builtin-tools/tools/TungstenTool/TungstenLiveMonitor.js';
 // WebBrowserPanel removed — browser-lite returns results inline via tool_result.
 // For full browser interaction use Claude-in-Chrome MCP tools.
 import { IssueFlagBanner } from '../components/PromptInput/IssueFlagBanner.js';
 import { useIssueFlagBanner } from '../hooks/useIssueFlagBanner.js';
-import { CompanionSprite, CompanionFloatingBubble, MIN_COLS_FOR_FULL_SPRITE } from '../buddy/CompanionSprite.js';
+const MIN_COLS_FOR_FULL_SPRITE = 80;
 import { DevBar } from '../components/DevBar.js';
 import { UltraplanChoiceDialog } from '../components/ultraplan/UltraplanChoiceDialog.js';
 import { UltraplanLaunchDialog } from '../components/ultraplan/UltraplanLaunchDialog.js';
@@ -1324,7 +1324,7 @@ export function REPL({
   } | null>(null);
 
   // Track local JSX commands separately so tools can't overwrite them.
-  // This enables "immediate" commands (like /btw) to persist while Claude is processing.
+  // This enables "immediate" commands (like /btw) to persist while DeepSeek Code is processing.
   const localJSXCommandRef = useRef<{
     jsx: React.ReactNode | null;
     shouldHidePromptInput: boolean;
@@ -1423,7 +1423,7 @@ export function REPL({
   // session from mid-conversation context.
   const haikuTitleAttemptedRef = useRef((initialMessages?.length ?? 0) > 0);
   const agentTitle = mainThreadAgentDefinition?.agentType;
-  const terminalTitle = sessionTitle ?? agentTitle ?? haikuTitle ?? 'Claude Code';
+  const terminalTitle = sessionTitle ?? agentTitle ?? haikuTitle ?? 'DeepSeek Code';
   const isWaitingForApproval =
     toolUseConfirmQueue.length > 0 || promptQueue.length > 0 || pendingWorkerRequest || pendingSandboxRequest;
   // Local-jsx commands (like /plugin, /config) show user-facing dialogs that
@@ -1437,7 +1437,7 @@ export function REPL({
   // here because onQueryImpl reads them (background session description,
   // haiku title extraction gate).
 
-  // Prevent macOS from sleeping while Claude is working
+  // Prevent macOS from sleeping while DeepSeek Code is working
   useEffect(() => {
     if (isLoading && !isWaitingForApproval && !isShowingLocalJSXCommand) {
       startPreventSleep();
@@ -1594,14 +1594,7 @@ export function REPL({
       } else {
         onScrollAway(handle);
         if (feature('KAIROS')) maybeLoadOlder(handle);
-        // Dismiss the companion bubble on scroll — it's absolute-positioned
-        // at bottom-right and covers transcript content. Scrolling = user is
-        // trying to read something under it.
-        if (feature('BUDDY')) {
-          setAppState(prev =>
-            prev.companionReaction === undefined ? prev : { ...prev, companionReaction: undefined },
-          );
-        }
+        // (companion bubble removed)
       }
     },
     [onRepin, onScrollAway, maybeLoadOlder, setAppState],
@@ -2139,7 +2132,7 @@ export function REPL({
             // reflect the new coordinator/normal mode
             /* eslint-disable @typescript-eslint/no-require-imports */
             const { getAgentDefinitionsWithOverrides, getActiveAgentsFromList } =
-              require('@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js') as typeof import('@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js');
+              require('@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js') as typeof import('@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js');
             /* eslint-enable @typescript-eslint/no-require-imports */
             getAgentDefinitionsWithOverrides.cache.clear?.();
             const freshAgentDefs = await getAgentDefinitionsWithOverrides(getOriginalCwd());
@@ -2752,7 +2745,7 @@ export function REPL({
 
         // When the REPL bridge is connected, also forward the sandbox
         // permission request as a can_use_tool control_request so the
-        // remote user (e.g. on claude.ai) can approve it too.
+        // remote user (e.g. on DeepSeek AI) can approve it too.
         if (feature('BRIDGE_MODE')) {
           const bridgeCallbacks = store.getState().replBridgePermissionCallbacks;
           if (bridgeCallbacks) {
@@ -3359,7 +3352,7 @@ export function REPL({
       // which was broken by SessionStart hook messages (prepended via
       // useDeferredHookMessages) and attachment messages (appended by
       // processTextPrompt) — both pushed length past 1 on turn one, so the
-      // title silently fell through to the "Claude Code" default.
+      // title silently fell through to the "DeepSeek Code" default.
       if (!titleDisabled && !sessionTitle && !agentTitle && !haikuTitleAttemptedRef.current) {
         const firstUserMessage = newMessages.find(m => m.type === 'user' && !m.isMeta);
         const text =
@@ -3517,20 +3510,6 @@ export function REPL({
         querySource: getQuerySourceForREPL(),
       })) {
         onQueryEvent(event);
-      }
-
-      if (feature('BUDDY') && typeof (globalThis as Record<string, unknown>).fireCompanionObserver === 'function') {
-        const _fireCompanionObserver = (globalThis as Record<string, unknown>).fireCompanionObserver as (
-          msgs: unknown,
-          cb: (r: unknown) => void,
-        ) => void;
-        void _fireCompanionObserver(messagesRef.current, reaction =>
-          setAppState(prev =>
-            prev.companionReaction === (reaction as typeof prev.companionReaction)
-              ? prev
-              : { ...prev, companionReaction: reaction as typeof prev.companionReaction },
-          ),
-        );
       }
 
       queryCheckpoint('query_end');
@@ -4006,7 +3985,7 @@ export function REPL({
       }
 
       // Handle immediate commands - these bypass the queue and execute right away
-      // even while Claude is processing. Commands opt-in via `immediate: true`.
+      // even while DeepSeek Code is processing. Commands opt-in via `immediate: true`.
       // Commands triggered via keybindings are always treated as immediate.
       if (!speculationAccept && input.trim().startsWith('/')) {
         // Expand [Pasted text #N] refs so immediate commands (e.g. /btw) receive
@@ -4756,7 +4735,7 @@ export function REPL({
   useLogMessages(messages, messages.length === initialMessages?.length);
 
   // REPL Bridge: replicate user/assistant messages to the bridge session
-  // for remote access via claude.ai. No-op in external builds or when not enabled.
+  // for remote access via DeepSeek AI. No-op in external builds or when not enabled.
   const { sendBridgeResult } = useReplBridge(messages, setMessages, abortControllerRef, commands, mainLoopModel);
   sendBridgeResultRef.current = sendBridgeResult;
 
@@ -4852,9 +4831,9 @@ export function REPL({
     }
   }, [submitCount]);
 
-  // Show notification when Claude is done responding and user is idle
+  // Show notification when DeepSeek Code is done responding and user is idle
   useEffect(() => {
-    // Don't set up notification if Claude is busy
+    // Don't set up notification if DeepSeek Code is busy
     if (isLoading) return;
 
     // Only enable notifications after the first new interaction in this session
@@ -4885,7 +4864,7 @@ export function REPL({
         ) {
           void sendNotification(
             {
-              message: 'Claude is waiting for your input',
+              message: 'DeepSeek Code is waiting for your input',
               notificationType: 'idle_prompt',
             },
             terminal,
@@ -5226,7 +5205,7 @@ export function REPL({
     const handleSuspend = () => {
       // Print suspension instructions
       process.stdout.write(
-        `\nClaude Code has been suspended. Run \`fg\` to bring Claude Code back.\nNote: ctrl + z now suspends Claude Code, ctrl + _ undoes input.\n`,
+        `\nClaude Code has been suspended. Run \`fg\` to bring DeepSeek Code back.\nNote: ctrl + z now suspends DeepSeek Code, ctrl + _ undoes input.\n`,
       );
     };
 
@@ -5887,9 +5866,7 @@ export function REPL({
         <FullscreenLayout
           scrollRef={scrollRef}
           overlay={toolPermissionOverlay}
-          bottomFloat={
-            feature('BUDDY') && companionVisible && !companionNarrow ? <CompanionFloatingBubble /> : undefined
-          }
+          bottomFloat={undefined}
           modal={centeredModal}
           modalScrollRef={modalScrollRef}
           dividerYRef={dividerYRef}
@@ -5974,14 +5951,7 @@ export function REPL({
             </>
           }
           bottom={
-            <Box
-              flexDirection={feature('BUDDY') && companionNarrow ? 'column' : 'row'}
-              width="100%"
-              alignItems={feature('BUDDY') && companionNarrow ? undefined : 'flex-end'}
-            >
-              {feature('BUDDY') && companionNarrow && isFullscreenEnvEnabled() && companionVisible ? (
-                <CompanionSprite />
-              ) : null}
+            <Box flexDirection="row" width="100%" alignItems="flex-end">
               <Box flexDirection="column" flexGrow={1}>
                 {isFullscreenEnvEnabled() && <PromptInputQueuedCommands />}
                 {permissionStickyFooter}
@@ -6664,9 +6634,7 @@ export function REPL({
                 )}
                 {process.env.USER_TYPE === 'ant' && <DevBar />}
               </Box>
-              {feature('BUDDY') && !(companionNarrow && isFullscreenEnvEnabled()) && companionVisible ? (
-                <CompanionSprite />
-              ) : null}
+              {null}
             </Box>
           }
         />

@@ -1,7 +1,7 @@
 // biome-ignore-all assist/source/organizeImports: ANT-ONLY import markers must not be reordered
 import { Box, Text } from '@anthropic/ink';
 import * as React from 'react';
-import { getLargeMemoryFiles, MAX_MEMORY_CHARACTER_COUNT, type MemoryFileInfo } from './claudemd.js';
+import { getLargeMemoryFiles, MAX_MEMORY_CHARACTER_COUNT, type MemoryFileInfo } from './deepseekmd.js';
 import figures from 'figures';
 import { getCwd } from './cwd.js';
 import { relative } from 'path';
@@ -13,7 +13,7 @@ import {
   getAuthTokenSource,
   isClaudeAISubscriber,
 } from './auth.js';
-import type { AgentDefinitionsResult } from '@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js';
+import type { AgentDefinitionsResult } from '@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js';
 import { getAgentDescriptionsTotalTokens, AGENT_DESCRIPTIONS_THRESHOLD } from './statusNoticeHelpers.js';
 import { isSupportedJetBrainsTerminal, toIDEDisplayName, getTerminalIdeType } from './ide.js';
 import { isJetBrainsPluginInstalledCachedSync } from './jetbrains.js';
@@ -143,7 +143,7 @@ const bothAuthMethodsNotice: StatusNoticeDefinition = {
         </Box>
         <Box flexDirection="column" marginLeft={3}>
           <Text color="warning">
-            · Trying to use {authTokenInfo.source === 'claude.ai' ? 'claude.ai' : authTokenInfo.source}?{' '}
+            · Trying to use {authTokenInfo.source === 'DeepSeek AI' ? 'DeepSeek AI' : authTokenInfo.source}?{' '}
             {apiKeySource === 'ANTHROPIC_API_KEY'
               ? 'Unset the ANTHROPIC_API_KEY environment variable, or claude /logout then say "No" to the API key approval before login.'
               : apiKeySource === 'apiKeyHelper'
@@ -152,8 +152,8 @@ const bothAuthMethodsNotice: StatusNoticeDefinition = {
           </Text>
           <Text color="warning">
             · Trying to use {apiKeySource}?{' '}
-            {authTokenInfo.source === 'claude.ai'
-              ? 'claude /logout to sign out of claude.ai.'
+            {authTokenInfo.source === 'DeepSeek AI'
+              ? 'claude /logout to sign out of DeepSeek AI.'
               : `Unset the ${authTokenInfo.source} environment variable.`}
           </Text>
         </Box>

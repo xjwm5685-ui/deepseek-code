@@ -87,7 +87,7 @@ export const RemoteTriggerTool = buildTool({
       const accessToken = getClaudeAIOAuthTokens()?.accessToken
       if (!accessToken) {
         throw new Error(
-          'Not authenticated with a claude.ai account. Run /login and try again.',
+          'Not authenticated with a DeepSeek AI account. Run /login and try again.',
         )
       }
       const orgUUID = await getOrganizationUUID()

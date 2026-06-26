@@ -8,7 +8,7 @@
 
 ## 背景
 
-Claude Code 使用三层门控系统：
+DeepSeek Code 使用三层门控系统：
 1. **编译时 feature flag** — `feature('FLAG_NAME')` from `bun:bundle`
 2. **GrowthBook 远程开关** — `tengu_*` 前缀，通过 SDK 连接 Anthropic 服务端
 3. **运行时环境变量** — `USER_TYPE`、`CLAUDE_CODE_*` 等
@@ -197,7 +197,7 @@ CLAUDE_GB_ADAPTER_KEY=sdk-xxx
 ### P2-4. 深度链接
 - **Gate**: `tengu_lodestone_enabled` → `true`
 - **功能**: 注册 `claude://` URL 协议处理器
-- **效果**: 可从浏览器直接打开 Claude Code
+- **效果**: 可从浏览器直接打开 DeepSeek Code
 - **风险**: 低
 
 ### P2-5. Agent 自动转后台
@@ -242,8 +242,8 @@ CLAUDE_GB_ADAPTER_KEY=sdk-xxx
 ### P3-3. Bridge 远程控制
 - **Gate**: `tengu_ccr_bridge` → `true`（已有编译 flag `BRIDGE_MODE` dev 模式启用）
 - **代码量**: 12,619 行，完整实现
-- **功能**: claude.ai 网页端远程控制 CLI
-- **依赖**: claude.ai 订阅 + WebSocket 后端
+- **功能**: DeepSeek AI 网页端远程控制 CLI
+- **依赖**: DeepSeek AI 订阅 + WebSocket 后端
 - **可行性**: 需要 Anthropic 的 CCR 后端
 
 ### P3-4. 远程定时 Agent

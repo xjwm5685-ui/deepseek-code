@@ -63,7 +63,7 @@
 
 ```
 packages/workflow-engine/
-  package.json            @claude-code-best/workflow-engine (workspace:*)
+  package.json            @deepseek-code/workflow-engine (workspace:*)
   tsconfig.json
   src/
     index.ts              公共导出

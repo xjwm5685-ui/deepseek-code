@@ -21,6 +21,9 @@ import { getPipeDisplayRole, isPipeControlled } from '../../utils/pipeTransport.
 import { isUndercover } from '../../utils/undercover.js';
 import { CoordinatorTaskPanel, useCoordinatorTaskCount } from '../CoordinatorAgentStatus.js';
 import { getLastAssistantMessageId, StatusLine, statusLineShouldDisplay } from '../StatusLine.js';
+import { tokenCountWithEstimation } from '../../utils/tokens.js';
+import { getEffectiveContextWindowSize } from '../../services/compact/autoCompact.js';
+import { ContextUsageMeter } from '../ContextUsageMeter.js';
 import { Notifications } from './Notifications.js';
 import { PromptInputFooterLeftSide } from './PromptInputFooterLeftSide.js';
 
@@ -178,7 +181,12 @@ function PromptInputFooter({
             onOpenTasksDialog={onOpenTasksDialog}
           />
         </Box>
-        <Box flexShrink={1} gap={1}>
+        <Box flexShrink={1} gap={1} alignItems="center">
+          {(() => {
+            const ctxLimit = getEffectiveContextWindowSize();
+            const ctxUsed = tokenCountWithEstimation(messagesRef.current);
+            return ctxLimit > 0 ? <ContextUsageMeter used={ctxUsed} limit={ctxLimit} showBar barWidth={8} /> : null;
+          })()}
           {isFullscreen ? null : (
             <Notifications
               apiKeyStatus={apiKeyStatus}

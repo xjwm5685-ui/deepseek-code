@@ -58,6 +58,7 @@ const ChannelsNoticeModule =
 /* eslint-enable @typescript-eslint/no-require-imports */
 import { SandboxManager } from 'src/utils/sandbox/sandbox-adapter.js';
 import { useShowGuestPassesUpsell, incrementGuestPassesSeenCount } from './GuestPassesUpsell.js';
+import { LiveDot } from '../AnimatedBorder.js';
 import {
   useShowOverageCreditUpsell,
   incrementOverageCreditUpsellSeenCount,
@@ -201,8 +202,8 @@ export function LogoV2(): React.ReactNode {
   const layoutMode = getLayoutMode(columns);
 
   const userTheme = resolveThemeSetting(getGlobalConfig().theme);
-  const borderTitle = ` ${color('claude', userTheme)('Claude Code')} ${color('inactive', userTheme)(`v${version}`)} `;
-  const compactBorderTitle = color('claude', userTheme)(' Claude Code ');
+  const borderTitle = ` ${color('claude', userTheme)('DeepSeek Code')} ${color('inactive', userTheme)(`v${version}`)} `;
+  const compactBorderTitle = color('claude', userTheme)(' DeepSeek Code ');
 
   // Early return for compact mode
   if (layoutMode === 'compact') {
@@ -305,7 +306,8 @@ export function LogoV2(): React.ReactNode {
               alignItems="center"
               minHeight={9}
             >
-              <Box marginTop={1}>
+              <Box marginTop={1} alignItems="center" gap={1}>
+                <LiveDot />
                 <Text bold>{welcomeMessage}</Text>
               </Box>
 

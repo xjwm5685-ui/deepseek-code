@@ -22,7 +22,7 @@ export function useMcpConnectivityStatus({ mcpClients = EMPTY_MCP_CLIENTS }: Pro
         client.config.type !== 'ws-ide' &&
         client.config.type !== 'claudeai-proxy',
     );
-    // claude.ai failures get a separate notification: they almost always indicate
+    // DeepSeek AI failures get a separate notification: they almost always indicate
     // a toolbox-service outage (shared auth backend), not a local config issue.
     // Only flag connectors that have previously connected successfully — an
     // org-configured connector that's been needs-auth since it appeared is one
@@ -69,8 +69,8 @@ export function useMcpConnectivityStatus({ mcpClients = EMPTY_MCP_CLIENTS }: Pro
         jsx: (
           <>
             <Text color="error">
-              {failedClaudeAiClients.length} claude.ai {failedClaudeAiClients.length === 1 ? 'connector' : 'connectors'}{' '}
-              unavailable
+              {failedClaudeAiClients.length} DeepSeek AI{' '}
+              {failedClaudeAiClients.length === 1 ? 'connector' : 'connectors'} unavailable
             </Text>
             <Text dimColor> · /mcp</Text>
           </>
@@ -99,7 +99,7 @@ export function useMcpConnectivityStatus({ mcpClients = EMPTY_MCP_CLIENTS }: Pro
         jsx: (
           <>
             <Text color="warning">
-              {needsAuthClaudeAiServers.length} claude.ai{' '}
+              {needsAuthClaudeAiServers.length} DeepSeek AI{' '}
               {needsAuthClaudeAiServers.length === 1 ? 'connector needs' : 'connectors need'} auth
             </Text>
             <Text dimColor> · /mcp</Text>

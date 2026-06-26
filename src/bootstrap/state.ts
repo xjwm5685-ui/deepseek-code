@@ -8,7 +8,7 @@ import { realpathSync } from 'fs'
 import sumBy from 'lodash-es/sumBy.js'
 import { cwd } from 'process'
 import type { HookEvent, ModelUsage } from 'src/entrypoints/agentSdkTypes.js'
-import type { AgentColorName } from '@claude-code-best/builtin-tools/tools/AgentTool/agentColorManager.js'
+import type { AgentColorName } from '@deepseek-code/builtin-tools/tools/AgentTool/agentColorManager.js'
 import type { HookCallbackMatcher } from 'src/types/hooks.js'
 // Indirection for browser-sdk build (package.json "browser" field swaps
 // crypto.ts for crypto.browser.ts). Pure leaf re-export of node:crypto —
@@ -119,8 +119,8 @@ type State = {
   // Last auto-mode classifier request(s) for /share transcript
   lastClassifierRequests: unknown[] | null
   // CLAUDE.md content cached by context.ts for the auto-mode classifier.
-  // Breaks the yoloClassifier → claudemd → filesystem → permissions cycle.
-  cachedClaudeMdContent: string | null
+  // Breaks the yoloClassifier → deepseekmd → filesystem → permissions cycle.
+  cacheddeepseekmdContent: string | null
   // In-memory error log for recent errors
   inMemoryErrorLog: Array<{ error: string; timestamp: string }>
   // Session-only plugins from --plugin-dir flag
@@ -204,7 +204,7 @@ type State = {
   // Last date emitted to the model (for detecting midnight date changes)
   lastEmittedDate: string | null
   // Additional directories from --add-dir flag (for CLAUDE.md loading)
-  additionalDirectoriesForClaudeMd: string[]
+  additionalDirectoriesFordeepseekmd: string[]
   // Channel server allowlist from --channels flag (servers whose channel
   // notifications should register this session). Parsed once in main.tsx —
   // the tag decides trust model: 'plugin' → marketplace verification +
@@ -339,7 +339,7 @@ function getInitialState(): State {
     lastAPIRequestMessages: null,
     // Last auto-mode classifier request(s) for /share transcript
     lastClassifierRequests: null,
-    cachedClaudeMdContent: null,
+    cacheddeepseekmdContent: null,
     // In-memory error log for recent errors
     inMemoryErrorLog: [],
     // Session-only plugins from --plugin-dir flag
@@ -395,7 +395,7 @@ function getInitialState(): State {
     // Last date emitted to the model
     lastEmittedDate: null,
     // Additional directories from --add-dir flag (for CLAUDE.md loading)
-    additionalDirectoriesForClaudeMd: [],
+    additionalDirectoriesFordeepseekmd: [],
     // Channel server allowlist from --channels flag
     allowedChannels: [],
     hasDevChannels: false,
@@ -948,7 +948,7 @@ export function setMeter(
     description: 'Number of git commits created',
   })
   STATE.costCounter = createCounter('claude_code.cost.usage', {
-    description: 'Cost of the Claude Code session',
+    description: 'Cost of the DeepSeek Code session',
     unit: 'USD',
   })
   STATE.tokenCounter = createCounter('claude_code.token.usage', {
@@ -1182,12 +1182,12 @@ export function getLastClassifierRequests(): unknown[] | null {
   return STATE.lastClassifierRequests
 }
 
-export function setCachedClaudeMdContent(content: string | null): void {
-  STATE.cachedClaudeMdContent = content
+export function setCacheddeepseekmdContent(content: string | null): void {
+  STATE.cacheddeepseekmdContent = content
 }
 
-export function getCachedClaudeMdContent(): string | null {
-  return STATE.cachedClaudeMdContent
+export function getCacheddeepseekmdContent(): string | null {
+  return STATE.cacheddeepseekmdContent
 }
 
 export function addToInMemoryErrorLog(errorInfo: {
@@ -1649,14 +1649,14 @@ export function setLastEmittedDate(date: string | null): void {
   STATE.lastEmittedDate = date
 }
 
-export function getAdditionalDirectoriesForClaudeMd(): string[] {
-  return STATE.additionalDirectoriesForClaudeMd
+export function getAdditionalDirectoriesFordeepseekmd(): string[] {
+  return STATE.additionalDirectoriesFordeepseekmd
 }
 
-export function setAdditionalDirectoriesForClaudeMd(
+export function setAdditionalDirectoriesFordeepseekmd(
   directories: string[],
 ): void {
-  STATE.additionalDirectoriesForClaudeMd = directories
+  STATE.additionalDirectoriesFordeepseekmd = directories
 }
 
 export function getAllowedChannels(): ChannelEntry[] {

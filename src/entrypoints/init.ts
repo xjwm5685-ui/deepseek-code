@@ -68,6 +68,14 @@ export const init = memoize(async (): Promise<void> => {
   logForDiagnosticsNoPII('info', 'init_started')
   profileCheckpoint('init_function_start')
 
+  // Initialize ~/.DeepSeek config directory and apply provider settings
+  // This runs before config loading so DeepSeek config takes priority
+  const { ensureDeepSeekConfig, applyDeepSeekConfig } = await import(
+    '../setup/deepseekInit.js'
+  )
+  ensureDeepSeekConfig()
+  applyDeepSeekConfig()
+
   // Validate configs are valid and enable configuration system
   try {
     const configsStart = Date.now()

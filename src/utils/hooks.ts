@@ -1,7 +1,7 @@
 // biome-ignore-all assist/source/organizeImports: ANT-ONLY import markers must not be reordered
 /**
  * Hooks are user-defined shell commands that can be executed at various points
- * in Claude Code's lifecycle.
+ * in DeepSeek Code's lifecycle.
  */
 import { basename } from 'path'
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process'
@@ -4484,7 +4484,7 @@ export function hasInstructionsLoadedHook(): boolean {
  * for observability/audit only and does not support blocking.
  *
  * Dispatch sites:
- * - Eager load at session start (getMemoryFiles in claudemd.ts)
+ * - Eager load at session start (getMemoryFiles in deepseekmd.ts)
  * - Eager reload after compaction (getMemoryFiles cache cleared by
  *   runPostCompactCleanup; next call reports load_reason: 'compact')
  * - Lazy load when Claude touches a file that triggers nested CLAUDE.md or

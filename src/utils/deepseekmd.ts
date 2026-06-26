@@ -41,7 +41,7 @@ import {
 import picomatch from 'picomatch'
 import { logEvent } from 'src/services/analytics/index.js'
 import {
-  getAdditionalDirectoriesForClaudeMd,
+  getAdditionalDirectoriesFordeepseekmd,
   getOriginalCwd,
 } from '../bootstrap/state.js'
 import { truncateEntrypointContent } from '../memdir/memdir.js'
@@ -536,19 +536,19 @@ function extractIncludePathsFromTokens(
 const MAX_INCLUDE_DEPTH = 5
 
 /**
- * Checks whether a CLAUDE.md file path is excluded by the claudeMdExcludes setting.
+ * Checks whether a CLAUDE.md file path is excluded by the deepseekmdExcludes setting.
  * Only applies to User, Project, and Local memory types.
  * Managed, AutoMem, and TeamMem types are never excluded.
  *
  * Matches both the original path and the realpath-resolved path to handle symlinks
  * (e.g., /tmp -> /private/tmp on macOS).
  */
-function isClaudeMdExcluded(filePath: string, type: MemoryType): boolean {
+function isdeepseekmdExcluded(filePath: string, type: MemoryType): boolean {
   if (type !== 'User' && type !== 'Project' && type !== 'Local') {
     return false
   }
 
-  const patterns = getInitialSettings().claudeMdExcludes
+  const patterns = getInitialSettings().deepseekmdExcludes
   if (!patterns || patterns.length === 0) {
     return false
   }
@@ -595,7 +595,7 @@ function resolveExcludePatterns(patterns: string[]): string[] {
     const dirToResolve = dirname(staticPrefix)
 
     try {
-      // sync IO: called from sync context (isClaudeMdExcluded -> processMemoryFile -> getMemoryFiles)
+      // sync IO: called from sync context (isdeepseekmdExcluded -> processMemoryFile -> getMemoryFiles)
       const resolvedDir = fs.realpathSync(dirToResolve).replaceAll('\\', '/')
       if (resolvedDir !== dirToResolve) {
         const resolvedPattern =
@@ -630,8 +630,8 @@ export async function processMemoryFile(
     return []
   }
 
-  // Skip if path is excluded by claudeMdExcludes setting
-  if (isClaudeMdExcluded(filePath, type)) {
+  // Skip if path is excluded by deepseekmdExcludes setting
+  if (isdeepseekmdExcluded(filePath, type)) {
     return []
   }
 
@@ -796,14 +796,14 @@ export const getMemoryFiles = memoize(
     const config = getCurrentProjectConfig()
     const includeExternal =
       forceIncludeExternal ||
-      config.hasClaudeMdExternalIncludesApproved ||
+      config.hasdeepseekmdExternalIncludesApproved ||
       false
 
     // Process Managed file first (always loaded - policy settings)
-    const managedClaudeMd = getMemoryPath('Managed')
+    const manageddeepseekmd = getMemoryPath('Managed')
     result.push(
       ...(await processMemoryFile(
-        managedClaudeMd,
+        manageddeepseekmd,
         'Managed',
         processedPaths,
         includeExternal,
@@ -823,10 +823,10 @@ export const getMemoryFiles = memoize(
 
     // Process User file (only if userSettings is enabled)
     if (isSettingSourceEnabled('userSettings')) {
-      const userClaudeMd = getMemoryPath('User')
+      const userdeepseekmd = getMemoryPath('User')
       result.push(
         ...(await processMemoryFile(
-          userClaudeMd,
+          userdeepseekmd,
           'User',
           processedPaths,
           true, // User memory can always include external files
@@ -937,7 +937,7 @@ export const getMemoryFiles = memoize(
     // Note: we don't check isSettingSourceEnabled('projectSettings') here because --add-dir
     // is an explicit user action and the SDK defaults settingSources to [] when not specified
     if (isEnvTruthy(process.env.CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD)) {
-      const additionalDirs = getAdditionalDirectoriesForClaudeMd()
+      const additionalDirs = getAdditionalDirectoriesFordeepseekmd()
       for (const dir of additionalDirs) {
         // Try reading CLAUDE.md from the additional directory
         const projectPath = join(dir, 'CLAUDE.md')
@@ -1023,7 +1023,7 @@ export const getMemoryFiles = memoize(
 
     if (!hasLoggedInitialLoad) {
       hasLoggedInitialLoad = true
-      logEvent('tengu_claudemd__initial_load', {
+      logEvent('tengu_deepseekmd__initial_load', {
         file_count: result.length,
         total_content_length: totalContentLength,
         user_count: typeCounts['User'] ?? 0,
@@ -1043,7 +1043,7 @@ export const getMemoryFiles = memoize(
     // AutoMem/TeamMem are intentionally excluded — they're a separate
     // memory system, not "instructions" in the CLAUDE.md/rules sense.
     // Gated on !forceIncludeExternal: the forceIncludeExternal=true variant
-    // is only used by getExternalClaudeMdIncludes() for approval checks, not
+    // is only used by getExternaldeepseekmdIncludes() for approval checks, not
     // for building context — firing the hook there would double-fire on startup.
     // The one-shot flag is consumed on every !forceIncludeExternal cache miss
     // (NOT gated on hasInstructionsLoadedHook) so the flag is released even
@@ -1149,7 +1149,7 @@ export function filterInjectedMemoryFiles(
   return files.filter(f => f.type !== 'AutoMem' && f.type !== 'TeamMem')
 }
 
-export const getClaudeMds = (
+export const getdeepseekmds = (
   memoryFiles: MemoryFileInfo[],
   filter?: (type: MemoryType) => boolean,
 ): string => {
@@ -1395,15 +1395,15 @@ export async function processConditionedMdRules(
   })
 }
 
-export type ExternalClaudeMdInclude = {
+export type ExternaldeepseekmdInclude = {
   path: string
   parent: string
 }
 
-export function getExternalClaudeMdIncludes(
+export function getExternaldeepseekmdIncludes(
   files: MemoryFileInfo[],
-): ExternalClaudeMdInclude[] {
-  const externals: ExternalClaudeMdInclude[] = []
+): ExternaldeepseekmdInclude[] {
+  const externals: ExternaldeepseekmdInclude[] = []
   for (const file of files) {
     if (file.type !== 'User' && file.parent && !pathInOriginalCwd(file.path)) {
       externals.push({ path: file.path, parent: file.parent })
@@ -1412,20 +1412,22 @@ export function getExternalClaudeMdIncludes(
   return externals
 }
 
-export function hasExternalClaudeMdIncludes(files: MemoryFileInfo[]): boolean {
-  return getExternalClaudeMdIncludes(files).length > 0
+export function hasExternaldeepseekmdIncludes(
+  files: MemoryFileInfo[],
+): boolean {
+  return getExternaldeepseekmdIncludes(files).length > 0
 }
 
-export async function shouldShowClaudeMdExternalIncludesWarning(): Promise<boolean> {
+export async function shouldShowdeepseekmdExternalIncludesWarning(): Promise<boolean> {
   const config = getCurrentProjectConfig()
   if (
-    config.hasClaudeMdExternalIncludesApproved ||
-    config.hasClaudeMdExternalIncludesWarningShown
+    config.hasdeepseekmdExternalIncludesApproved ||
+    config.hasdeepseekmdExternalIncludesWarningShown
   ) {
     return false
   }
 
-  return hasExternalClaudeMdIncludes(await getMemoryFiles(true))
+  return hasExternaldeepseekmdIncludes(await getMemoryFiles(true))
 }
 
 /**

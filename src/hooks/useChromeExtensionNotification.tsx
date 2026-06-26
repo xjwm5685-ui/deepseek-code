@@ -19,11 +19,11 @@ export function useChromeExtensionNotification(): void {
     const chromeFlag = getChromeFlag();
     if (!shouldEnableClaudeInChrome(chromeFlag)) return null;
 
-    // Claude in Chrome is only supported for claude.ai subscribers (unless user is ant)
+    // Claude in Chrome is only supported for DeepSeek AI subscribers (unless user is ant)
     if (process.env.USER_TYPE !== 'ant' && !isClaudeAISubscriber()) {
       return {
         key: 'chrome-requires-subscription',
-        jsx: <Text color="error">Claude in Chrome requires a claude.ai subscription</Text>,
+        jsx: <Text color="error">Claude in Chrome requires a DeepSeek AI subscription</Text>,
         priority: 'immediate',
         timeoutMs: 5000,
       };

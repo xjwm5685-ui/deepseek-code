@@ -2,8 +2,8 @@ import { getFeatureValue_CACHED_MAY_BE_STALE } from '../../services/analytics/gr
 import type { MCPServerConnection } from '../../services/mcp/types.js'
 import { isPolicyAllowed } from '../../services/policyLimits/index.js'
 import type { ToolUseContext } from '../../Tool.js'
-import { ASK_USER_QUESTION_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/AskUserQuestionTool/prompt.js'
-import { REMOTE_TRIGGER_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/RemoteTriggerTool/prompt.js'
+import { ASK_USER_QUESTION_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/AskUserQuestionTool/prompt.js'
+import { REMOTE_TRIGGER_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/RemoteTriggerTool/prompt.js'
 import { getClaudeAIOAuthTokens } from '../../utils/auth.js'
 import { checkRepoForRemoteAccess } from '../../utils/background/remote/preconditions.js'
 import { logForDebugging } from '../../utils/debug.js'
@@ -173,7 +173,7 @@ Set \`header: "Action"\` and offer the four actions (create/list/update/run) as 
 
   return `# Schedule Remote Agents
 
-You are helping the user schedule, update, list, or run **remote** Claude Code agents. These are NOT local cron jobs — each trigger spawns a fully isolated remote session (CCR) in Anthropic's cloud infrastructure on a cron schedule. The agent runs in a sandboxed environment with its own git checkout, tools, and optional MCP connections.
+You are helping the user schedule, update, list, or run **remote** DeepSeek Code agents. These are NOT local cron jobs — each trigger spawns a fully isolated remote session (CCR) in Anthropic's cloud infrastructure on a cron schedule. The agent runs in a sandboxed environment with its own git checkout, tools, and optional MCP connections.
 
 ## First Step
 
@@ -227,7 +227,7 @@ Generate a fresh lowercase UUID for \`events[].data.uuid\` yourself.
 
 ## Available MCP Connectors
 
-These are the user's currently connected claude.ai MCP connectors:
+These are the user's currently connected DeepSeek AI MCP connectors:
 
 ${connectorsInfo}
 
@@ -327,7 +327,7 @@ export function registerScheduleRemoteAgentsSkill(): void {
     description:
       'Create, update, list, or run scheduled remote agents (triggers) that execute on a cron schedule.',
     whenToUse:
-      'When the user wants to schedule a recurring remote agent, set up automated tasks, create a cron job for Claude Code, or manage their scheduled agents/triggers.',
+      'When the user wants to schedule a recurring remote agent, set up automated tasks, create a cron job for DeepSeek Code, or manage their scheduled agents/triggers.',
     userInvocable: true,
     isEnabled: () =>
       getFeatureValue_CACHED_MAY_BE_STALE('tengu_surreal_dali', false) &&
@@ -338,7 +338,7 @@ export function registerScheduleRemoteAgentsSkill(): void {
         return [
           {
             type: 'text',
-            text: 'You need to authenticate with a claude.ai account first. API accounts are not supported. Run /login, then try /schedule again.',
+            text: 'You need to authenticate with a DeepSeek AI account first. API accounts are not supported. Run /login, then try /schedule again.',
           },
         ]
       }
@@ -353,7 +353,7 @@ export function registerScheduleRemoteAgentsSkill(): void {
         return [
           {
             type: 'text',
-            text: "We're having trouble connecting with your remote claude.ai account to set up a scheduled task. Please try /schedule again in a few minutes.",
+            text: "We're having trouble connecting with your remote DeepSeek AI account to set up a scheduled task. Please try /schedule again in a few minutes.",
           },
         ]
       }

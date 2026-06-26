@@ -1,4 +1,4 @@
-// builtin-tools — All tool implementations for Claude Code
+// builtin-tools — All tool implementations for DeepSeek Code
 // This barrel file re-exports the main tool constants and utilities.
 // For specific submodules, use deep imports: 'builtin-tools/tools/XTool/XTool.js'
 
@@ -63,16 +63,16 @@ export { TeamDeleteTool } from './tools/TeamDeleteTool/TeamDeleteTool.js'
 export { TerminalCaptureTool } from './tools/TerminalCaptureTool/TerminalCaptureTool.js'
 export { VerifyPlanExecutionTool } from './tools/VerifyPlanExecutionTool/VerifyPlanExecutionTool.js'
 export { WebBrowserTool } from './tools/WebBrowserTool/WebBrowserTool.js'
-// WorkflowTool 实现已迁移到 @claude-code-best/workflow-engine（独立包，端口适配）。
+// WorkflowTool 实现已迁移到 @deepseek-code/workflow-engine（独立包，端口适配）。
 // 注意：本 commit 移除了 builtin-tools 的 WorkflowTool 值导出和 getWorkflowCommands。
-// - WorkflowTool 工厂：改由 @claude-code-best/workflow-engine 的 createWorkflowTool 提供
+// - WorkflowTool 工厂：改由 @deepseek-code/workflow-engine 的 createWorkflowTool 提供
 // - getWorkflowCommands：已移除，功能迁至 src/workflow/namedWorkflowCommands.ts
 // 第三方若从本包 import 这两个符号，需切换到新路径。
 export {
   createWorkflowTool,
   WORKFLOW_TOOL_NAME,
   type WorkflowToolDescriptor,
-} from '@claude-code-best/workflow-engine'
+} from '@deepseek-code/workflow-engine'
 
 // Constants
 export {

@@ -38,8 +38,8 @@ import { categorizeRetryableAPIError } from './services/api/errors.js'
 import type { MCPServerConnection } from './services/mcp/types.js'
 import type { AppState } from './state/AppState.js'
 import { type Tools, type ToolUseContext, toolMatchesName } from './Tool.js'
-import type { AgentDefinition } from '@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js'
-import { SYNTHETIC_OUTPUT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/SyntheticOutputTool/SyntheticOutputTool.js'
+import type { AgentDefinition } from '@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js'
+import { SYNTHETIC_OUTPUT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/SyntheticOutputTool/SyntheticOutputTool.js'
 import type { APIError } from '@anthropic-ai/sdk'
 import type { Message, SystemCompactBoundaryMessage } from './types/message.js'
 import type { OrphanedPermission } from './types/textInputTypes.js'
@@ -1248,7 +1248,7 @@ export class QueryEngine {
 
 /**
  * Sends a single prompt to the Claude API and returns the response.
- * Assumes that claude is being used non-interactively -- will not
+ * Assumes that DeepSeek Code is being used non-interactively -- will not
  * ask the user for permissions or further input.
  *
  * Convenience wrapper around QueryEngine for one-shot usage.

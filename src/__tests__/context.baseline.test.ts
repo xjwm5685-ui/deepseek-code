@@ -9,7 +9,7 @@ import {
   getUserContext,
   setSystemPromptInjection,
 } from '../context'
-import { clearMemoryFileCaches } from '../utils/claudemd'
+import { clearMemoryFileCaches } from '../utils/deepseekmd'
 import {
   cleanupTempDir,
   createTempDir,
@@ -17,16 +17,16 @@ import {
 } from '../../tests/mocks/file-system'
 
 let tempDir = ''
-let projectClaudeMdContent = ''
+let projectdeepseekmdContent = ''
 
 beforeEach(async () => {
   tempDir = await createTempDir('context-baseline-')
-  projectClaudeMdContent = `baseline-${Date.now()}`
+  projectdeepseekmdContent = `baseline-${Date.now()}`
 
   resetStateForTests()
   setOriginalCwd(tempDir)
   setProjectRoot(tempDir)
-  await writeTempFile(tempDir, 'CLAUDE.md', projectClaudeMdContent)
+  await writeTempFile(tempDir, 'CLAUDE.md', projectdeepseekmdContent)
 
   clearMemoryFileCaches()
   getUserContext.cache.clear?.()
@@ -52,16 +52,16 @@ describe('context baseline', () => {
     const ctx = await getUserContext()
 
     expect(ctx.currentDate).toContain("Today's date is")
-    expect(ctx.claudeMd).toContain(projectClaudeMdContent)
+    expect(ctx.deepseekmd).toContain(projectdeepseekmdContent)
   })
 
-  test('CLAUDE_CODE_DISABLE_CLAUDE_MDS suppresses claudeMd loading', async () => {
+  test('CLAUDE_CODE_DISABLE_CLAUDE_MDS suppresses deepseekmd loading', async () => {
     process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS = '1'
 
     const ctx = await getUserContext()
 
     expect(ctx.currentDate).toContain("Today's date is")
-    expect(ctx.claudeMd).toBeUndefined()
+    expect(ctx.deepseekmd).toBeUndefined()
   })
 
   test('setSystemPromptInjection clears the memoized user-context cache', async () => {
@@ -69,13 +69,13 @@ describe('context baseline', () => {
     process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS = '1'
 
     const second = await getUserContext()
-    expect(first.claudeMd).toContain(projectClaudeMdContent)
-    expect(second.claudeMd).toContain(projectClaudeMdContent)
+    expect(first.deepseekmd).toContain(projectdeepseekmdContent)
+    expect(second.deepseekmd).toContain(projectdeepseekmdContent)
 
     setSystemPromptInjection('cache-break')
 
     const third = await getUserContext()
-    expect(third.claudeMd).toBeUndefined()
+    expect(third.deepseekmd).toBeUndefined()
   })
 
   test('getSystemContext reflects system prompt injection after cache invalidation', async () => {

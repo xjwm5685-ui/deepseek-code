@@ -1,18 +1,18 @@
 {
-  "name": "@claude-code-best/workflow-engine",
+  "name": "@deepseek-code/workflow-engine",
   "version": "0.1.0",
   "description": "Deterministic JS script orchestration engine for multi-agent workflows. Zero core-layer runtime dependencies; talks to the world via port adapters.",
   "type": "module",
   "license": "MIT",
-  "author": "claude-code-best <claude-code-best@proton.me>",
-  "homepage": "https://github.com/claude-code-best/claude-code/tree/main/packages/workflow-engine#readme",
+  "author": "deepseek-code <deepseek-code@proton.me>",
+  "homepage": "https://github.com/deepseek-code/claude-code/tree/main/packages/workflow-engine#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/claude-code-best/claude-code.git",
+    "url": "git+https://github.com/deepseek-code/claude-code.git",
     "directory": "packages/workflow-engine"
   },
   "bugs": {
-    "url": "https://github.com/claude-code-best/claude-code/issues"
+    "url": "https://github.com/deepseek-code/claude-code/issues"
   },
   "keywords": [
     "workflow",

@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) and other AI coding agents when working with code in this repository.
+This file provides guidance to DeepSeek Code (claude.ai/code) and other AI coding agents when working with code in this repository.
 
 ## Project Overview
 
-This is a **reverse-engineered / decompiled** version of Anthropic's official Claude Code CLI tool. The goal is to restore core functionality while trimming secondary capabilities. Many modules are stubbed or feature-flagged off. TypeScript strict mode is enforced — **`bunx tsc --noEmit` must pass with zero errors**.
+This is a **reverse-engineered / decompiled** version of Anthropic's official DeepSeek Code CLI tool. The goal is to restore core functionality while trimming secondary capabilities. Many modules are stubbed or feature-flagged off. TypeScript strict mode is enforced — **`bunx tsc --noEmit` must pass with zero errors**.
 
 ## Git Commit Message Convention
 
@@ -117,8 +117,8 @@ bun run docs:dev
 ### Tool System
 
 - **`src/Tool.ts`** — Tool interface definition (`Tool` type) and utilities (`findToolByName`, `toolMatchesName`).
-- **`src/tools.ts`** — Tool registry. Assembles the tool list; tools are imported from `@claude-code-best/builtin-tools` package. Some tools are conditionally loaded via `feature()` flags or `process.env.USER_TYPE`.
-- **`packages/builtin-tools/src/tools/`** — 59 个子目录（含 shared/testing 等工具目录），通过 `@claude-code-best/builtin-tools` 包导出。主要分类：
+- **`src/tools.ts`** — Tool registry. Assembles the tool list; tools are imported from `@deepseek-code/builtin-tools` package. Some tools are conditionally loaded via `feature()` flags or `process.env.USER_TYPE`.
+- **`packages/builtin-tools/src/tools/`** — 59 个子目录（含 shared/testing 等工具目录），通过 `@deepseek-code/builtin-tools` 包导出。主要分类：
   - **文件操作**: FileEditTool, FileReadTool, FileWriteTool, GlobTool, GrepTool
   - **Shell/执行**: BashTool, PowerShellTool, REPLTool
   - **Agent 系统**: AgentTool, TaskCreateTool, TaskUpdateTool, TaskListTool, TaskGetTool
@@ -158,10 +158,10 @@ bun run docs:dev
 | `packages/@ant/computer-use-swift/` | 截图 + 应用管理（dispatcher + per-platform backend） |
 | `packages/@ant/claude-for-chrome-mcp/` | Chrome 浏览器控制（通过 `--chrome` 启用） |
 | `packages/@ant/model-provider/` | Model provider 抽象层 |
-| `packages/builtin-tools/` | 内置工具集（60 个 tool 实现，通过 `@claude-code-best/builtin-tools` 导出） |
+| `packages/builtin-tools/` | 内置工具集（60 个 tool 实现，通过 `@deepseek-code/builtin-tools` 导出） |
 | `packages/agent-tools/` | Agent 工具集 |
 | `packages/acp-link/` | ACP 代理服务器（WebSocket → ACP agent 桥接） |
-| `packages/cc-knowledge/` | Claude Code 知识库（非 workspace 包） |
+| `packages/cc-knowledge/` | DeepSeek Code 知识库（非 workspace 包） |
 | `packages/langfuse-dashboard/` | Langfuse 可观测性面板（非 workspace 包） |
 | `packages/mcp-client/` | MCP 客户端库 |
 | `packages/mcp-server/` | MCP 服务端库（非 workspace 包） |
@@ -183,7 +183,7 @@ bun run docs:dev
 
 ### ACP Protocol (Agent Client Protocol)
 
-- **`src/services/acp/`** — ACP agent 实现，包含 `agent.ts`（AcpAgent 类）、`bridge.ts`（Claude Code ↔ ACP 桥接）、`permissions.ts`（权限处理）、`entry.ts`（入口）。
+- **`src/services/acp/`** — ACP agent 实现，包含 `agent.ts`（AcpAgent 类）、`bridge.ts`（DeepSeek Code ↔ ACP 桥接）、`permissions.ts`（权限处理）、`entry.ts`（入口）。
 - **`packages/acp-link/`** — ACP 代理服务器，将 WebSocket 客户端桥接到 ACP agent。提供 `acp-link` CLI 命令，支持自定义端口/HTTPS/认证/会话管理、RCS 集成（REST 注册 + WS identify 两步流程）、权限模式透传（fallback: 客户端传值 > config > `ACP_PERMISSION_MODE` 环境变量）。
 - ACP 权限管道改进：`createAcpCanUseTool` 统一权限流水线，`applySessionMode` 模式同步，`bypassPermissions` 可用性检测（非 root/sandbox 环境）。
 - ACP Plan 可视化已支持 `session/update plan` 类型的消息展示（PlanView 组件，含进度条/状态图标/优先级标签）。

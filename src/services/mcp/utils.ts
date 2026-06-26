@@ -4,7 +4,7 @@ import { getIsNonInteractiveSession } from '../../bootstrap/state.js'
 import type { Command } from '../../commands.js'
 import type { AgentMcpServerInfo } from '../../components/mcp/types.js'
 import type { Tool } from '../../Tool.js'
-import type { AgentDefinition } from '@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js'
+import type { AgentDefinition } from '@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js'
 import { getCwd } from '../../utils/cwd.js'
 import { getGlobalClaudeFile } from '../../utils/env.js'
 import { isSettingSourceEnabled } from '../../utils/settings/constants.js'
@@ -264,7 +264,7 @@ export function describeMcpConfigFilePath(scope: ConfigScope): string {
     case 'enterprise':
       return getEnterpriseMcpFilePath()
     case 'claudeai':
-      return 'claude.ai'
+      return 'DeepSeek AI'
     default:
       return scope
   }
@@ -283,7 +283,7 @@ export function getScopeLabel(scope: ConfigScope): string {
     case 'enterprise':
       return 'Enterprise config (managed by your organization)'
     case 'claudeai':
-      return 'claude.ai config'
+      return 'DeepSeek AI config'
     default:
       return scope
   }
@@ -417,7 +417,7 @@ export function getMcpServerScopeFromToolName(
   // Look up server config
   const serverConfig = getMcpConfigByName(mcpInfo.serverName)
 
-  // Fallback: claude.ai servers have normalized names starting with "claude_ai_"
+  // Fallback: DeepSeek AI servers have normalized names starting with "claude_ai_"
   // but aren't in getMcpConfigByName (they're fetched async separately)
   if (!serverConfig && mcpInfo.serverName.startsWith('claude_ai_')) {
     return 'claudeai'

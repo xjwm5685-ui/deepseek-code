@@ -17,23 +17,23 @@ import {
 } from 'src/services/analytics/index.js'
 import { prefetchAllMcpResources } from 'src/services/mcp/client.js'
 import type { ScopedMcpServerConfig } from 'src/services/mcp/types.js'
-import { BashTool } from '@claude-code-best/builtin-tools/tools/BashTool/BashTool.js'
-import { FileEditTool } from '@claude-code-best/builtin-tools/tools/FileEditTool/FileEditTool.js'
+import { BashTool } from '@deepseek-code/builtin-tools/tools/BashTool/BashTool.js'
+import { FileEditTool } from '@deepseek-code/builtin-tools/tools/FileEditTool/FileEditTool.js'
 import {
   normalizeFileEditInput,
   stripTrailingWhitespace,
-} from '@claude-code-best/builtin-tools/tools/FileEditTool/utils.js'
-import { FileWriteTool } from '@claude-code-best/builtin-tools/tools/FileWriteTool/FileWriteTool.js'
+} from '@deepseek-code/builtin-tools/tools/FileEditTool/utils.js'
+import { FileWriteTool } from '@deepseek-code/builtin-tools/tools/FileWriteTool/FileWriteTool.js'
 import { getTools } from 'src/tools.js'
 import type { AgentId } from 'src/types/ids.js'
 import type { z } from 'zod/v4'
 import { CLI_SYSPROMPT_PREFIXES } from '../constants/system.js'
 import { roughTokenCountEstimation } from '../services/tokenEstimation.js'
 import type { Tool, ToolPermissionContext, Tools } from '../Tool.js'
-import { AGENT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/AgentTool/constants.js'
-import type { AgentDefinition } from '@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js'
-import { EXIT_PLAN_MODE_V2_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/ExitPlanModeTool/constants.js'
-import { TASK_OUTPUT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/TaskOutputTool/constants.js'
+import { AGENT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/AgentTool/constants.js'
+import type { AgentDefinition } from '@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js'
+import { EXIT_PLAN_MODE_V2_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/ExitPlanModeTool/constants.js'
+import { TASK_OUTPUT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/TaskOutputTool/constants.js'
 import type { Message } from '../types/message.js'
 import { isAgentSwarmsEnabled } from './agentSwarmsEnabled.js'
 import {
@@ -452,16 +452,16 @@ export function prependUserContext(
     return messages
   }
 
-  // Extract claudeMd as a dedicated high-weight user message so it isn't
+  // Extract deepseekmd as a dedicated high-weight user message so it isn't
   // buried inside the generic <system-reminder> with the "may or may not be
   // relevant" disclaimer, which would degrade its instructional weight.
-  const { claudeMd, ...rest } = context
+  const { deepseekmd, ...rest } = context
   const result: Message[] = []
 
-  if (claudeMd) {
+  if (deepseekmd) {
     result.push(
       createUserMessage({
-        content: `<project-instructions>\n${claudeMd}\n</project-instructions>\n`,
+        content: `<project-instructions>\n${deepseekmd}\n</project-instructions>\n`,
         isMeta: true,
       }),
     )
@@ -504,10 +504,10 @@ export async function logContextMetrics(
     ])
   // Extract individual context sizes and calculate total
   const gitStatusSize = systemContext.gitStatus?.length ?? 0
-  const claudeMdSize = userContext.claudeMd?.length ?? 0
+  const deepseekmdSize = userContext.deepseekmd?.length ?? 0
 
   // Calculate total context size
-  const totalContextSize = gitStatusSize + claudeMdSize
+  const totalContextSize = gitStatusSize + deepseekmdSize
 
   // Get file count using ripgrep (rounded to nearest power of 10 for privacy)
   const currentDir = getCwd()
@@ -562,7 +562,7 @@ export async function logContextMetrics(
 
   logEvent('tengu_context_size', {
     git_status_size: gitStatusSize,
-    claude_md_size: claudeMdSize,
+    claude_md_size: deepseekmdSize,
     total_context_size: totalContextSize,
     project_file_count_rounded: fileCount,
     mcp_tools_count: mcpToolsCount,

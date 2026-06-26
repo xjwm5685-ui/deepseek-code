@@ -20,10 +20,10 @@ import { generateSessionName } from '../../../commands/rename/generateSessionNam
 import { launchUltraplan } from '../../../commands/ultraplan.js';
 import { type KeyboardEvent, Box, Text } from '@anthropic/ink';
 import type { AppState } from '../../../state/AppStateStore.js';
-import { AGENT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/AgentTool/constants.js';
-import { EXIT_PLAN_MODE_V2_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/ExitPlanModeTool/constants.js';
-import type { AllowedPrompt } from '@claude-code-best/builtin-tools/tools/ExitPlanModeTool/ExitPlanModeV2Tool.js';
-import { TEAM_CREATE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/TeamCreateTool/constants.js';
+import { AGENT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/AgentTool/constants.js';
+import { EXIT_PLAN_MODE_V2_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/ExitPlanModeTool/constants.js';
+import type { AllowedPrompt } from '@deepseek-code/builtin-tools/tools/ExitPlanModeTool/ExitPlanModeV2Tool.js';
+import { TEAM_CREATE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/TeamCreateTool/constants.js';
 import { isAgentSwarmsEnabled } from '../../../utils/agentSwarmsEnabled.js';
 import { calculateContextPercentages, getContextWindowForModel } from '../../../utils/context.js';
 import { getExternalEditor } from '../../../utils/editor.js';
@@ -852,7 +852,7 @@ export function buildPlanApprovalOptions({
 
   if (showUltraplan) {
     options.push({
-      label: 'No, refine with Ultraplan on Claude Code on the web',
+      label: 'No, refine with Ultraplan on DeepSeek Code on the web',
       value: 'ultraplan',
     });
   }

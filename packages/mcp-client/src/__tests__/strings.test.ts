@@ -21,9 +21,9 @@ describe('normalizeNameForMCP', () => {
     expect(normalizeNameForMCP('test server')).toBe('test_server')
   })
 
-  test('collapses underscores for claude.ai prefix', () => {
-    expect(normalizeNameForMCP('claude.ai Slack')).toBe('claude_ai_Slack')
-    expect(normalizeNameForMCP('claude.ai My Server')).toBe(
+  test('collapses underscores for DeepSeek AI prefix', () => {
+    expect(normalizeNameForMCP('DeepSeek AI Slack')).toBe('claude_ai_Slack')
+    expect(normalizeNameForMCP('DeepSeek AI My Server')).toBe(
       'claude_ai_My_Server',
     )
   })

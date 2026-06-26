@@ -41,7 +41,7 @@ export const CONSOLE_OAUTH_SCOPES = [
   CLAUDE_AI_PROFILE_SCOPE,
 ] as const
 
-// Claude.ai OAuth scopes - for Claude.ai subscribers (Pro/Max/Team/Enterprise)
+// DeepSeek AI OAuth scopes - for DeepSeek AI subscribers (Pro/Max/Team/Enterprise)
 export const CLAUDE_AI_OAUTH_SCOPES = [
   CLAUDE_AI_PROFILE_SCOPE,
   CLAUDE_AI_INFERENCE_SCOPE,
@@ -50,8 +50,8 @@ export const CLAUDE_AI_OAUTH_SCOPES = [
   'user:file_upload',
 ] as const
 
-// All OAuth scopes - union of all scopes used in Claude CLI
-// When logging in, request all scopes in order to handle both Console -> Claude.ai redirect
+// All OAuth scopes - union of all scopes used in DeepSeek CLI
+// When logging in, request all scopes in order to handle both Console -> DeepSeek AI redirect
 // Ensure that `OAuthConsentPage` in apps repo is kept in sync with this list.
 export const ALL_OAUTH_SCOPES = Array.from(
   new Set([...CONSOLE_OAUTH_SCOPES, ...CLAUDE_AI_OAUTH_SCOPES]),
@@ -62,10 +62,10 @@ type OauthConfig = {
   CONSOLE_AUTHORIZE_URL: string
   CLAUDE_AI_AUTHORIZE_URL: string
   /**
-   * The claude.ai web origin. Separate from CLAUDE_AI_AUTHORIZE_URL because
+   * The DeepSeek AI web origin. Separate from CLAUDE_AI_AUTHORIZE_URL because
    * that now routes through claude.com/cai/* for attribution — deriving
    * .origin from it would give claude.com, breaking links to /code,
-   * /settings/connectors, and other claude.ai web pages.
+   * /settings/connectors, and other DeepSeek AI web pages.
    */
   CLAUDE_AI_ORIGIN: string
   TOKEN_URL: string
@@ -106,7 +106,7 @@ const PROD_OAUTH_CONFIG = {
 /**
  * Client ID Metadata Document URL for MCP OAuth (CIMD / SEP-991).
  * When an MCP auth server advertises client_id_metadata_document_supported: true,
- * Claude Code uses this URL as its client_id instead of Dynamic Client Registration.
+ * DeepSeek Code uses this URL as its client_id instead of Dynamic Client Registration.
  * The URL must point to a JSON document hosted by Anthropic.
  * See: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-00
  */

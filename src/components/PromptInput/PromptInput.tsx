@@ -15,8 +15,9 @@ import type { FooterItem } from 'src/state/AppStateStore.js';
 import { getCwd } from 'src/utils/cwd.js';
 import { isQueuedCommandEditable, popAllEditable } from 'src/utils/messageQueueManager.js';
 import stripAnsi from 'strip-ansi';
-import { companionReservedColumns } from '../../buddy/CompanionSprite.js';
-import { findBuddyTriggerPositions, useBuddyNotification } from '../../buddy/useBuddyNotification.js';
+const companionReservedColumns = () => 0;
+const findBuddyTriggerPositions = () => [];
+const useBuddyNotification = () => {};
 import { FastModePicker } from '../../commands/fast/fast.js';
 import { isUltrareviewEnabled } from '../../commands/review/ultrareviewEnabled.js';
 import { getNativeCSIuTerminalDisplayName } from '../../commands/terminalSetup/terminalSetup.js';
@@ -35,6 +36,7 @@ import { useMainLoopModel } from '../../hooks/useMainLoopModel.js';
 import { usePromptSuggestion } from '../../hooks/usePromptSuggestion.js';
 import { useTerminalSize } from '../../hooks/useTerminalSize.js';
 import { useTypeahead } from '../../hooks/useTypeahead.js';
+import { useShimmerSweep } from '../../hooks/useMicroAnimations.js';
 import { Box, type BorderTextOptions, type ClickEvent, type Key, stringWidth, Text, useInput } from '@anthropic/ink';
 import { useOptionalKeybindingContext } from '../../keybindings/KeybindingContext.js';
 import { getShortcutDisplay } from '../../keybindings/shortcutFormat.js';
@@ -53,8 +55,8 @@ import {
   AGENT_COLOR_TO_THEME_COLOR,
   AGENT_COLORS,
   type AgentColorName,
-} from '@claude-code-best/builtin-tools/tools/AgentTool/agentColorManager.js';
-import type { AgentDefinition } from '@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js';
+} from '@deepseek-code/builtin-tools/tools/AgentTool/agentColorManager.js';
+import type { AgentDefinition } from '@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js';
 import type { Message } from '../../types/message.js';
 import type { BaseTextInputProps, PromptInputMode, VimMode } from '../../types/textInputTypes.js';
 import { isAgentSwarmsEnabled } from '../../utils/agentSwarmsEnabled.js';
@@ -895,7 +897,7 @@ function PromptInput({
     if (feature('ULTRAPLAN') && ultraplanTriggers.length) {
       addNotification({
         key: 'ultraplan-active',
-        text: 'This prompt will launch an ultraplan session in Claude Code on the web',
+        text: 'This prompt will launch an ultraplan session in DeepSeek Code on the web',
         priority: 'immediate',
         timeoutMs: 5000,
       });
@@ -1674,6 +1676,20 @@ function PromptInput({
     }
   }, [toolPermissionContext, teamContext, viewedTeammate, setAppState, setToolPermissionContext, helpOpen]);
 
+  // Handler for chat:cycleCCBMode - cycle through CCB personality modes
+  const handleCycleCCBMode = useCallback(() => {
+    // Dynamically import to avoid circular deps
+    import('../../modes/store.js').then(({ cycleMode }) => {
+      const next = cycleMode();
+      addNotification({
+        key: `ccb-mode-${next.slug}`,
+        text: `${next.icon} ${next.name}`,
+        priority: 'immediate' as const,
+        timeoutMs: 2000,
+      });
+    });
+  }, [addNotification]);
+
   // Handler for chat:imagePaste - paste image from clipboard
   const handleImagePaste = useCallback(() => {
     void getImageFromClipboard().then(imageData => {
@@ -1726,6 +1742,7 @@ function PromptInput({
       'chat:modelPicker': handleModelPicker,
       'chat:thinkingToggle': handleThinkingToggle,
       'chat:cycleMode': handleCycleMode,
+      'chat:cycleCCBMode': handleCycleCCBMode,
       'chat:imagePaste': handleImagePaste,
     }),
     [
@@ -2109,12 +2126,8 @@ function PromptInput({
     });
   }, [effortNotificationText, addNotification, removeNotification]);
 
-  useBuddyNotification();
-
-  const companionReactionState = useAppState(s => s.companionReaction);
-  const companionSpeaking = feature('BUDDY') ? companionReactionState !== undefined : false;
   const { columns, rows } = useTerminalSize();
-  const textInputColumns = columns - 3 - companionReservedColumns(columns, companionSpeaking);
+  const textInputColumns = columns - 3;
 
   // POC: click-to-position-cursor. Mouse tracking is only enabled inside
   // <AlternateScreen>, so this is dormant in the normal main-screen REPL.
@@ -2407,28 +2420,58 @@ function PromptInput({
     inputFilter: lazySpaceInputFilter,
   };
 
-  const getBorderColor = (): keyof Theme => {
-    const modeColors: Record<string, keyof Theme> = {
-      bash: 'bashBorder',
+  // Animated border gradient — multi-color rainbow sweep
+  const borderSweep = useShimmerSweep(true, 5000);
+
+  // Rainbow gradient palette: smooth transitions through multiple colors
+  const RAINBOW = [
+    { r: 74, g: 108, b: 247 }, // DeepSeek blue
+    { r: 108, g: 74, b: 247 }, // purple
+    { r: 247, g: 74, b: 200 }, // pink
+    { r: 247, g: 120, b: 74 }, // orange
+    { r: 247, g: 210, b: 74 }, // yellow
+    { r: 74, g: 210, b: 120 }, // green
+    { r: 74, g: 180, b: 247 }, // cyan
+    { r: 74, g: 108, b: 247 }, // back to blue
+  ];
+
+  const getBorderColor = (): string => {
+    const modeColors: Record<string, string> = {
+      bash: 'rgb(255,100,80)',
     };
 
-    // Mode colors take priority, then teammate color, then default
+    // Mode colors take priority
     if (modeColors[mode]) {
       return modeColors[mode];
     }
 
-    // In-process teammates run headless - don't apply teammate colors to leader UI
+    // In-process teammates: static gray
     if (isInProcessTeammate()) {
-      return 'promptBorder';
+      return 'rgb(120,120,120)';
     }
 
     // Check for teammate color from environment
     const teammateColorName = getTeammateColor();
     if (teammateColorName && AGENT_COLORS.includes(teammateColorName as AgentColorName)) {
-      return AGENT_COLOR_TO_THEME_COLOR[teammateColorName as AgentColorName];
+      const themeKey = AGENT_COLOR_TO_THEME_COLOR[teammateColorName as AgentColorName];
+      return themeKey;
     }
 
-    return 'promptBorder';
+    // Rainbow gradient: smoothly cycle through all colors
+    // sweep goes 0→1 over 4 seconds, mapping to the rainbow palette
+    const t = borderSweep;
+    const numColors = RAINBOW.length;
+    const idx = t * (numColors - 1);
+    const i = Math.floor(idx);
+    const f = idx - i; // fractional part for interpolation
+    const c1 = RAINBOW[Math.min(i, numColors - 1)]!;
+    const c2 = RAINBOW[Math.min(i + 1, numColors - 1)]!;
+
+    // Full brightness rainbow always — no more invisible gray
+    const r = Math.round(c1.r + (c2.r - c1.r) * f);
+    const g = Math.round(c1.g + (c2.g - c1.g) * f);
+    const b = Math.round(c1.b + (c2.b - c1.b) * f);
+    return `rgb(${r},${g},${b})`;
   };
 
   if (isExternalEditorActive) {

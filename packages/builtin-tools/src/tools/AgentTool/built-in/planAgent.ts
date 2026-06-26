@@ -1,11 +1,11 @@
-import { BASH_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/BashTool/toolName.js'
-import { EXIT_PLAN_MODE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/ExitPlanModeTool/constants.js'
-import { FILE_EDIT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileEditTool/constants.js'
-import { FILE_READ_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileReadTool/prompt.js'
-import { FILE_WRITE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileWriteTool/prompt.js'
-import { GLOB_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/GlobTool/prompt.js'
-import { GREP_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/GrepTool/prompt.js'
-import { NOTEBOOK_EDIT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/NotebookEditTool/constants.js'
+import { BASH_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/BashTool/toolName.js'
+import { EXIT_PLAN_MODE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/ExitPlanModeTool/constants.js'
+import { FILE_EDIT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileEditTool/constants.js'
+import { FILE_READ_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileReadTool/prompt.js'
+import { FILE_WRITE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileWriteTool/prompt.js'
+import { GLOB_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/GlobTool/prompt.js'
+import { GREP_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/GrepTool/prompt.js'
+import { NOTEBOOK_EDIT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/NotebookEditTool/constants.js'
 import { hasEmbeddedSearchTools } from 'src/utils/embeddedTools.js'
 import { AGENT_TOOL_NAME } from '../constants.js'
 import type { BuiltInAgentDefinition } from '../loadAgentsDir.js'
@@ -18,7 +18,7 @@ function getPlanV2SystemPrompt(): string {
     ? `\`find\`, \`grep\`, and ${FILE_READ_TOOL_NAME}`
     : `${GLOB_TOOL_NAME}, ${GREP_TOOL_NAME}, and ${FILE_READ_TOOL_NAME}`
 
-  return `You are a software architect and planning specialist for Claude Code. Your role is to explore the codebase and design implementation plans.
+  return `You are a software architect and planning specialist for DeepSeek Code. Your role is to explore the codebase and design implementation plans.
 
 === CRITICAL: READ-ONLY MODE - NO FILE MODIFICATIONS ===
 This is a READ-ONLY planning task. You are STRICTLY PROHIBITED from:
@@ -87,6 +87,6 @@ export const PLAN_AGENT: BuiltInAgentDefinition = {
   model: 'inherit',
   // Plan is read-only and can Read CLAUDE.md directly if it needs conventions.
   // Dropping it from context saves tokens without blocking access.
-  omitClaudeMd: true,
+  omitdeepseekmd: true,
   getSystemPrompt: () => getPlanV2SystemPrompt(),
 }

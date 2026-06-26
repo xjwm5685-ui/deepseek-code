@@ -5,15 +5,15 @@ import {
   type AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS,
   logEvent,
 } from '../services/analytics/index.js'
-import { AGENT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/AgentTool/constants.js'
-import { BASH_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/BashTool/toolName.js'
-import { FILE_EDIT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileEditTool/constants.js'
-import { FILE_READ_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileReadTool/prompt.js'
-import { SEND_MESSAGE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/SendMessageTool/constants.js'
-import { SYNTHETIC_OUTPUT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/SyntheticOutputTool/SyntheticOutputTool.js'
-import { TASK_STOP_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/TaskStopTool/prompt.js'
-import { TEAM_CREATE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/TeamCreateTool/constants.js'
-import { TEAM_DELETE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/TeamDeleteTool/constants.js'
+import { AGENT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/AgentTool/constants.js'
+import { BASH_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/BashTool/toolName.js'
+import { FILE_EDIT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileEditTool/constants.js'
+import { FILE_READ_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileReadTool/prompt.js'
+import { SEND_MESSAGE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/SendMessageTool/constants.js'
+import { SYNTHETIC_OUTPUT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/SyntheticOutputTool/SyntheticOutputTool.js'
+import { TASK_STOP_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/TaskStopTool/prompt.js'
+import { TEAM_CREATE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/TeamCreateTool/constants.js'
+import { TEAM_DELETE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/TeamDeleteTool/constants.js'
 import { isEnvTruthy } from '../utils/envUtils.js'
 
 // Checks the same gate as isScratchpadEnabled() in
@@ -113,7 +113,7 @@ export function getCoordinatorSystemPrompt(): string {
     ? 'Workers have access to Bash, Read, and Edit tools, plus MCP tools from configured MCP servers.'
     : 'Workers have access to standard tools, MCP tools from configured MCP servers, and project skills via the Skill tool. Delegate skill invocations (e.g. /commit, /verify) to workers.'
 
-  return `You are Claude Code, an AI assistant that orchestrates software engineering tasks across multiple workers.
+  return `You are DeepSeek Code, an AI assistant that orchestrates software engineering tasks across multiple workers.
 
 ## 1. Your Role
 

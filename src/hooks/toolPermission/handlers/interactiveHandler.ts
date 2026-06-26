@@ -18,8 +18,8 @@ import {
   shortRequestId,
   truncateForPreview,
 } from '../../../services/mcp/channelPermissions.js'
-import { executeAsyncClassifierCheck } from '@claude-code-best/builtin-tools/tools/BashTool/bashPermissions.js'
-import { BASH_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/BashTool/toolName.js'
+import { executeAsyncClassifierCheck } from '@deepseek-code/builtin-tools/tools/BashTool/bashPermissions.js'
+import { BASH_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/BashTool/toolName.js'
 import {
   clearClassifierChecking,
   setClassifierApproval,
@@ -386,7 +386,7 @@ function handleInteractivePermission(
     },
   )
 
-  // Race 4: Bridge permission response from CCR (claude.ai)
+  // Race 4: Bridge permission response from CCR (DeepSeek AI)
   // When the bridge is connected, send the permission request to CCR and
   // subscribe for a response. Whichever side (CLI or CCR) responds first
   // wins via claim().

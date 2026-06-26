@@ -1,8 +1,8 @@
 // MCP string utility functions — pure, no dependencies
 // Extracted from src/services/mcp/mcpStringUtils.ts and normalization.ts
 
-// Claude.ai server names are prefixed with this string
-const CLAUDEAI_SERVER_PREFIX = 'claude.ai '
+// DeepSeek AI server names are prefixed with this string
+const CLAUDEAI_SERVER_PREFIX = 'DeepSeek AI '
 
 /**
  * Normalize server names to be compatible with the API pattern ^[a-zA-Z0-9_-]{1,64}$

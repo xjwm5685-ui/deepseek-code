@@ -21,7 +21,6 @@ import {
 } from 'src/services/analytics/index.js'
 import { sanitizeToolNameForAnalytics } from 'src/services/analytics/metadata.js'
 import type { AgentId } from 'src/types/ids.js'
-import { companionIntroText } from '../buddy/prompt.js'
 import { NO_CONTENT_MESSAGE } from '../constants/messages.js'
 import { OUTPUT_STYLE_CONFIG } from '../constants/outputStyles.js'
 import { isAutoMemoryEnabled } from '../memdir/paths.js'
@@ -104,21 +103,21 @@ import type {
   HookEvent,
   SDKAssistantMessageError,
 } from 'src/entrypoints/agentSdkTypes.js'
-import { EXPLORE_AGENT } from '@claude-code-best/builtin-tools/tools/AgentTool/built-in/exploreAgent.js'
-import { PLAN_AGENT } from '@claude-code-best/builtin-tools/tools/AgentTool/built-in/planAgent.js'
-import { areExplorePlanAgentsEnabled } from '@claude-code-best/builtin-tools/tools/AgentTool/builtInAgents.js'
-import { AGENT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/AgentTool/constants.js'
-import { ASK_USER_QUESTION_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/AskUserQuestionTool/prompt.js'
-import { BashTool } from '@claude-code-best/builtin-tools/tools/BashTool/BashTool.js'
-import { ExitPlanModeV2Tool } from '@claude-code-best/builtin-tools/tools/ExitPlanModeTool/ExitPlanModeV2Tool.js'
-import { FileEditTool } from '@claude-code-best/builtin-tools/tools/FileEditTool/FileEditTool.js'
+import { EXPLORE_AGENT } from '@deepseek-code/builtin-tools/tools/AgentTool/built-in/exploreAgent.js'
+import { PLAN_AGENT } from '@deepseek-code/builtin-tools/tools/AgentTool/built-in/planAgent.js'
+import { areExplorePlanAgentsEnabled } from '@deepseek-code/builtin-tools/tools/AgentTool/builtInAgents.js'
+import { AGENT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/AgentTool/constants.js'
+import { ASK_USER_QUESTION_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/AskUserQuestionTool/prompt.js'
+import { BashTool } from '@deepseek-code/builtin-tools/tools/BashTool/BashTool.js'
+import { ExitPlanModeV2Tool } from '@deepseek-code/builtin-tools/tools/ExitPlanModeTool/ExitPlanModeV2Tool.js'
+import { FileEditTool } from '@deepseek-code/builtin-tools/tools/FileEditTool/FileEditTool.js'
 import {
   FILE_READ_TOOL_NAME,
   MAX_LINES_TO_READ,
-} from '@claude-code-best/builtin-tools/tools/FileReadTool/prompt.js'
-import { FileWriteTool } from '@claude-code-best/builtin-tools/tools/FileWriteTool/FileWriteTool.js'
-import { GLOB_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/GlobTool/prompt.js'
-import { GREP_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/GrepTool/prompt.js'
+} from '@deepseek-code/builtin-tools/tools/FileReadTool/prompt.js'
+import { FileWriteTool } from '@deepseek-code/builtin-tools/tools/FileWriteTool/FileWriteTool.js'
+import { GLOB_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/GlobTool/prompt.js'
+import { GREP_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/GrepTool/prompt.js'
 import type { DeepImmutable } from 'src/types/utils.js'
 import { getStrictToolResultPairing } from '../bootstrap/state.js'
 import type { SpinnerMode } from '../components/Spinner.js'
@@ -139,11 +138,11 @@ import {
 import {
   FileReadTool,
   type Output as FileReadToolOutput,
-} from '@claude-code-best/builtin-tools/tools/FileReadTool/FileReadTool.js'
-import { SEND_MESSAGE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/SendMessageTool/constants.js'
-import { TASK_CREATE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/TaskCreateTool/constants.js'
-import { TASK_OUTPUT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/TaskOutputTool/constants.js'
-import { TASK_UPDATE_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/TaskUpdateTool/constants.js'
+} from '@deepseek-code/builtin-tools/tools/FileReadTool/FileReadTool.js'
+import { SEND_MESSAGE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/SendMessageTool/constants.js'
+import { TASK_CREATE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/TaskCreateTool/constants.js'
+import { TASK_OUTPUT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/TaskOutputTool/constants.js'
+import { TASK_UPDATE_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/TaskUpdateTool/constants.js'
 import type { PermissionMode } from '../types/permissions.js'
 import { normalizeToolInput, normalizeToolInputForAPI } from './api.js'
 import { getCurrentProjectConfig } from './config.js'
@@ -236,7 +235,7 @@ export function AUTO_REJECT_MESSAGE(toolName: string): string {
   return `Permission to use ${toolName} has been denied. ${DENIAL_WORKAROUND_GUIDANCE}`
 }
 export function DONT_ASK_REJECT_MESSAGE(toolName: string): string {
-  return `Permission to use ${toolName} has been denied because Claude Code is running in don't ask mode. ${DENIAL_WORKAROUND_GUIDANCE}`
+  return `Permission to use ${toolName} has been denied because DeepSeek Code is running in don't ask mode. ${DENIAL_WORKAROUND_GUIDANCE}`
 }
 export const NO_RESPONSE_REQUESTED = 'No response requested.'
 
@@ -4664,14 +4663,6 @@ You have exited auto mode. The user may now want to interact more directly. You 
       }
       return wrapMessagesInSystemReminder([
         createUserMessage({ content: parts.join('\n\n'), isMeta: true }),
-      ])
-    }
-    case 'companion_intro': {
-      return wrapMessagesInSystemReminder([
-        createUserMessage({
-          content: companionIntroText(attachment.name, attachment.species),
-          isMeta: true,
-        }),
       ])
     }
     case 'verify_plan_reminder': {

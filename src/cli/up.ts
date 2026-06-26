@@ -19,12 +19,12 @@ export async function up(): Promise<void> {
   let upSection: string | null = null
 
   for (const dir of searchDirs) {
-    const claudeMdPath = join(dir, 'CLAUDE.md')
+    const deepseekmdPath = join(dir, 'CLAUDE.md')
     try {
-      const content = readFileSync(claudeMdPath, 'utf-8')
+      const content = readFileSync(deepseekmdPath, 'utf-8')
       upSection = extractUpSection(content)
       if (upSection) {
-        console.log(`Found "# claude up" in ${claudeMdPath}`)
+        console.log(`Found "# claude up" in ${deepseekmdPath}`)
         break
       }
     } catch {

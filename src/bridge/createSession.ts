@@ -69,7 +69,7 @@ export async function createBridgeSession({
     return null
   }
 
-  // Self-hosted bridges don't require a claude.ai org UUID — the local server
+  // Self-hosted bridges don't require a DeepSeek AI org UUID — the local server
   // doesn't validate it. Use a placeholder to avoid blocking session creation.
   const orgUUID = isSelfHostedBridge()
     ? 'self-hosted'

@@ -112,8 +112,8 @@ export type ProjectConfig = {
 
   hasCompletedProjectOnboarding?: boolean
   projectOnboardingSeenCount: number
-  hasClaudeMdExternalIncludesApproved?: boolean
-  hasClaudeMdExternalIncludesWarningShown?: boolean
+  hasdeepseekmdExternalIncludesApproved?: boolean
+  hasdeepseekmdExternalIncludesWarningShown?: boolean
   // MCP server approval fields - migrated to settings but kept for backward compatibility
   enabledMcpjsonServers?: string[]
   disabledMcpjsonServers?: string[]
@@ -143,8 +143,8 @@ const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   disabledMcpjsonServers: [],
   hasTrustDialogAccepted: false,
   projectOnboardingSeenCount: 0,
-  hasClaudeMdExternalIncludesApproved: false,
-  hasClaudeMdExternalIncludesWarningShown: false,
+  hasdeepseekmdExternalIncludesApproved: false,
+  hasdeepseekmdExternalIncludesWarningShown: false,
 }
 
 export type InstallMethod = 'local' | 'native' | 'global' | 'unknown'
@@ -205,7 +205,7 @@ export type GlobalConfig = {
   // @deprecated - Migrated to ~/.claude/cache/changelog.md. Keep for migration support.
   cachedChangelog?: string
   mcpServers?: Record<string, McpServerConfig>
-  // claude.ai MCP connectors that have successfully connected at least once.
+  // DeepSeek AI MCP connectors that have successfully connected at least once.
   // Used to gate "connector unavailable" / "needs auth" startup notifications:
   // a connector the user has actually used is worth flagging when it breaks,
   // but an org-configured connector that's been needs-auth since day one is
@@ -272,8 +272,6 @@ export type GlobalConfig = {
     [tipId: string]: number // Key is tipId, value is the numStartups when tip was last shown
   }
 
-  // /buddy companion soul — bones regenerated from userId on read. See src/buddy/.
-  companion?: import('../buddy/types.js').StoredCompanion
   companionMuted?: boolean
 
   // Feedback survey tracking
@@ -379,9 +377,9 @@ export type GlobalConfig = {
   showSpinnerTree?: boolean // Whether to show the teammate spinner tree instead of pills
 
   // First start time tracking
-  firstStartTime?: string // ISO timestamp when Claude Code was first started on this machine
+  firstStartTime?: string // ISO timestamp when DeepSeek Code was first started on this machine
 
-  messageIdleNotifThresholdMs: number // How long the user has to have been idle to get a notification that Claude is done generating
+  messageIdleNotifThresholdMs: number // How long the user has to have been idle to get a notification that DeepSeek Code is done generating
 
   githubActionSetupCount?: number // Number of times the user has set up the GitHub Action
   slackAppInstallCount?: number // Number of times the user has clicked to install the Slack app
@@ -402,8 +400,8 @@ export type GlobalConfig = {
   inputNeededNotifEnabled?: boolean
   agentPushNotifEnabled?: boolean
 
-  // Claude Code usage tracking
-  claudeCodeFirstTokenDate?: string // ISO timestamp of the user's first Claude Code OAuth token
+  // DeepSeek Code usage tracking
+  claudeCodeFirstTokenDate?: string // ISO timestamp of the user's first DeepSeek Code OAuth token
 
   // Model switch callout tracking (ant-only)
   modelSwitchCalloutDismissed?: boolean // Whether user chose "Don't show again"
@@ -516,7 +514,7 @@ export type GlobalConfig = {
   lspRecommendationNeverPlugins?: string[] // Plugin IDs to never suggest
   lspRecommendationIgnoredCount?: number // Track ignored recommendations (stops after 5)
 
-  // Claude Code hint protocol state (<claude-code-hint /> tags from CLIs/SDKs).
+  // DeepSeek Code hint protocol state (<claude-code-hint /> tags from CLIs/SDKs).
   // Nested by hint type so future types (docs, mcp, ...) slot in without new
   // top-level keys.
   claudeCodeHints?: {

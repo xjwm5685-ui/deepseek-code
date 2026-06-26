@@ -27,10 +27,10 @@ import { onChangeAppState } from './state/onChangeAppState.js';
 import { ThemeProvider } from '@anthropic/ink';
 import { normalizeApiKeyForConfig } from './utils/authPortable.js';
 import {
-  getExternalClaudeMdIncludes,
+  getExternaldeepseekmdIncludes,
   getMemoryFiles,
-  shouldShowClaudeMdExternalIncludesWarning,
-} from './utils/claudemd.js';
+  shouldShowdeepseekmdExternalIncludesWarning,
+} from './utils/deepseekmd.js';
 import {
   checkHasTrustDialogAccepted,
   getCustomApiKeyStatus,
@@ -201,11 +201,11 @@ export async function showSetupScreens(
     }
 
     // Check for claude.md includes that need approval
-    if (await shouldShowClaudeMdExternalIncludesWarning()) {
-      const externalIncludes = getExternalClaudeMdIncludes(await getMemoryFiles(true));
-      const { ClaudeMdExternalIncludesDialog } = await import('./components/ClaudeMdExternalIncludesDialog.js');
+    if (await shouldShowdeepseekmdExternalIncludesWarning()) {
+      const externalIncludes = getExternaldeepseekmdIncludes(await getMemoryFiles(true));
+      const { deepseekmdExternalIncludesDialog } = await import('./components/deepseekmdExternalIncludesDialog.js');
       await showSetupDialog(root, done => (
-        <ClaudeMdExternalIncludesDialog onDone={done} isStandaloneDialog externalIncludes={externalIncludes} />
+        <deepseekmdExternalIncludesDialog onDone={done} isStandaloneDialog externalIncludes={externalIncludes} />
       ));
     }
   }
@@ -247,7 +247,7 @@ export async function showSetupScreens(
 
   // Check for custom API key
   // On homespace, ANTHROPIC_API_KEY is preserved in process.env for child
-  // processes but ignored by Claude Code itself (see auth.ts).
+  // processes but ignored by DeepSeek Code itself (see auth.ts).
   if (process.env.ANTHROPIC_API_KEY && !isRunningOnHomespace()) {
     const customApiKeyTruncated = normalizeApiKeyForConfig(process.env.ANTHROPIC_API_KEY);
     const keyStatus = getCustomApiKeyStatus(customApiKeyTruncated);

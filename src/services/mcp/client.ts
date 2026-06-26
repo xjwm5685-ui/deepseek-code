@@ -50,13 +50,13 @@ import {
   type ToolCallProgress,
   toolMatchesName,
 } from '../../Tool.js'
-import { ListMcpResourcesTool } from '@claude-code-best/builtin-tools/tools/ListMcpResourcesTool/ListMcpResourcesTool.js'
+import { ListMcpResourcesTool } from '@deepseek-code/builtin-tools/tools/ListMcpResourcesTool/ListMcpResourcesTool.js'
 import {
   type MCPProgress,
   MCPTool,
-} from '@claude-code-best/builtin-tools/tools/MCPTool/MCPTool.js'
-import { createMcpAuthTool } from '@claude-code-best/builtin-tools/tools/McpAuthTool/McpAuthTool.js'
-import { ReadMcpResourceTool } from '@claude-code-best/builtin-tools/tools/ReadMcpResourceTool/ReadMcpResourceTool.js'
+} from '@deepseek-code/builtin-tools/tools/MCPTool/MCPTool.js'
+import { createMcpAuthTool } from '@deepseek-code/builtin-tools/tools/McpAuthTool/McpAuthTool.js'
+import { ReadMcpResourceTool } from '@deepseek-code/builtin-tools/tools/ReadMcpResourceTool/ReadMcpResourceTool.js'
 import { createAbortController } from '../../utils/abortController.js'
 import { count } from '../../utils/array.js'
 import {
@@ -123,8 +123,8 @@ import { getLoggingSafeMcpBaseUrl } from './utils.js'
 import {
   isMcpSessionExpiredError as isMcpSessionExpiredErrorFromPackage,
   MAX_MCP_DESCRIPTION_LENGTH as PKG_MAX_MCP_DESCRIPTION_LENGTH,
-} from '@claude-code-best/mcp-client'
-import { recursivelySanitizeUnicode } from '@claude-code-best/mcp-client'
+} from '@deepseek-code/mcp-client'
+import { recursivelySanitizeUnicode } from '@deepseek-code/mcp-client'
 
 /* eslint-disable @typescript-eslint/no-require-imports */
 const fetchMcpSkillsForClient = feature('MCP_SKILLS')
@@ -136,7 +136,7 @@ const fetchMcpSkillsForClient = feature('MCP_SKILLS')
 import { UnauthorizedError } from '@modelcontextprotocol/sdk/client/auth.js'
 import type { AssistantMessage } from 'src/types/message.js'
 /* eslint-enable @typescript-eslint/no-require-imports */
-import { classifyMcpToolForCollapse } from '@claude-code-best/builtin-tools/tools/MCPTool/classifyForCollapse.js'
+import { classifyMcpToolForCollapse } from '@deepseek-code/builtin-tools/tools/MCPTool/classifyForCollapse.js'
 import { clearKeychainCache } from '../../utils/secureStorage/macOsKeychainHelpers.js'
 import { sleep } from '../../utils/sleep.js'
 import {
@@ -351,7 +351,7 @@ function handleRemoteAuthFailure(
   const label: Record<typeof transportType, string> = {
     sse: 'SSE',
     http: 'HTTP',
-    'claudeai-proxy': 'claude.ai proxy',
+    'claudeai-proxy': 'DeepSeek AI proxy',
   }
   logMCPDebug(
     name,
@@ -362,12 +362,12 @@ function handleRemoteAuthFailure(
 }
 
 /**
- * Fetch wrapper for claude.ai proxy connections. Attaches the OAuth bearer
+ * Fetch wrapper for DeepSeek AI proxy connections. Attaches the OAuth bearer
  * token and retries once on 401 via handleOAuth401Error (force-refresh).
  *
  * The Anthropic API path has this retry (withRetry.ts, grove.ts) to handle
  * memoize-cache staleness and clock drift. Without the same here, a single
- * stale token mass-401s every claude.ai connector and sticks them all in the
+ * stale token mass-401s every DeepSeek AI connector and sticks them all in the
  * 15-min needs-auth cache.
  */
 export function createClaudeAiProxyFetch(innerFetch: FetchLike): FetchLike {
@@ -376,7 +376,7 @@ export function createClaudeAiProxyFetch(innerFetch: FetchLike): FetchLike {
       await checkAndRefreshOAuthTokenIfNeeded()
       const currentTokens = getClaudeAIOAuthTokens()
       if (!currentTokens) {
-        throw new Error('No claude.ai OAuth token available')
+        throw new Error('No DeepSeek AI OAuth token available')
       }
       // eslint-disable-next-line eslint-plugin-n/no-unsupported-features/node-builtins
       const headers = new Headers(init?.headers)
@@ -869,18 +869,18 @@ export const connectToServer = memoize(
       } else if (serverRef.type === 'claudeai-proxy') {
         logMCPDebug(
           name,
-          `Initializing claude.ai proxy transport for server ${serverRef.id}`,
+          `Initializing DeepSeek AI proxy transport for server ${serverRef.id}`,
         )
 
         const tokens = getClaudeAIOAuthTokens()
         if (!tokens) {
-          throw new Error('No claude.ai OAuth token found')
+          throw new Error('No DeepSeek AI OAuth token found')
         }
 
         const oauthConfig = getOauthConfig()
         const proxyUrl = `${oauthConfig.MCP_PROXY_URL}${oauthConfig.MCP_PROXY_PATH.replace('{server_id}', serverRef.id)}`
 
-        logMCPDebug(name, `Using claude.ai proxy at ${proxyUrl}`)
+        logMCPDebug(name, `Using DeepSeek AI proxy at ${proxyUrl}`)
 
         // eslint-disable-next-line eslint-plugin-n/no-unsupported-features/node-builtins
         const fetchWithAuth = createClaudeAiProxyFetch(globalThis.fetch)
@@ -902,7 +902,7 @@ export const connectToServer = memoize(
           new URL(proxyUrl),
           transportOptions,
         )
-        logMCPDebug(name, `claude.ai proxy transport created successfully`)
+        logMCPDebug(name, `DeepSeek AI proxy transport created successfully`)
       } else if (
         ((serverRef as ScopedMcpServerConfig).type === 'stdio' ||
           !(serverRef as ScopedMcpServerConfig).type) &&
@@ -996,7 +996,7 @@ export const connectToServer = memoize(
       const client = new Client(
         {
           name: 'claude-code',
-          title: 'Claude Code',
+          title: 'DeepSeek Code',
           version: MACRO.VERSION ?? 'unknown',
           description: "Anthropic's agentic coding tool",
           websiteUrl: PRODUCT_URL,
@@ -1138,7 +1138,7 @@ export const connectToServer = memoize(
         ) {
           logMCPDebug(
             name,
-            `claude.ai proxy connection failed after ${elapsed}ms: ${error.message}`,
+            `DeepSeek AI proxy connection failed after ${elapsed}ms: ${error.message}`,
           )
           logMCPError(name, error)
 
@@ -3385,7 +3385,7 @@ export async function setupSdkMcpClients(
       const client = new Client(
         {
           name: 'claude-code',
-          title: 'Claude Code',
+          title: 'DeepSeek Code',
           version: MACRO.VERSION ?? 'unknown',
           description: "Anthropic's agentic coding tool",
           websiteUrl: PRODUCT_URL,

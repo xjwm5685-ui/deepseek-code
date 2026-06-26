@@ -36,6 +36,8 @@ import { getCurrentTurnTokenBudget, getTurnOutputTokens } from '../bootstrap/sta
 import { TeammateSpinnerTree } from './Spinner/TeammateSpinnerTree.js';
 import { useAnimationFrame } from '@anthropic/ink';
 import { getGlobalConfig } from '../utils/config.js';
+import { useBreath } from '../hooks/useMicroAnimations.js';
+import { AnimatedThinkingDots } from './AnimatedThinkingDots.js';
 export type { SpinnerMode } from './Spinner/index.js';
 
 const DEFAULT_CHARACTERS = getDefaultCharacters();
@@ -204,6 +206,9 @@ function SpinnerWithVerbInner({
 
   const effortValue = useAppState(s => s.effortValue);
   const effortSuffix = getEffortSuffix(getMainLoopModel(), effortValue);
+  // Subtle breathing on the message text while thinking
+  const msgBreath = useBreath(mode === 'thinking', 2000);
+  const msgDim = mode === 'thinking' ? 0.4 + msgBreath * 0.3 : 0;
 
   // Check if any running in-process teammates exist (needed for both modes)
   const runningTeammates = getAllInProcessTeammateTasks(tasks).filter(t => t.status === 'running');
@@ -415,6 +420,8 @@ function BriefSpinner({ mode, overrideMessage }: BriefSpinnerProps): React.React
   const [randomVerb] = useState(() => sample(getSpinnerVerbs()) ?? 'Working');
   const verb = overrideMessage ?? randomVerb;
   const connStatus = useAppState(s => s.remoteConnectionStatus);
+  // Subtle breathing on the dots
+  const dotBreath = useBreath(!reducedMotion && !connStatus, 1500);
 
   // Track CLI activity so OS/IDE "busy" indicators fire in brief mode too
   useEffect(() => {
@@ -440,10 +447,10 @@ function BriefSpinner({ mode, overrideMessage }: BriefSpinnerProps): React.React
   const showConnWarning = connStatus === 'reconnecting' || connStatus === 'disconnected';
   const connText = connStatus === 'reconnecting' ? 'Reconnecting' : 'Disconnected';
 
-  // Dots padded to a fixed 3 columns so the right-aligned count doesn't
-  // jitter as the cycle advances.
+  // Dots with smooth breathing animation — expands and contracts gently
   const dotFrame = Math.floor(time / 300) % 3;
-  const dots = reducedMotion ? '…  ' : '.'.repeat(dotFrame + 1).padEnd(3);
+  const dotCount = reducedMotion ? 3 : Math.round(1 + dotBreath * 2);
+  const dots = reducedMotion ? '…  ' : '.'.repeat(Math.min(dotCount, 3)).padEnd(3);
 
   // Shimmer: reverse-sweep highlight across the verb. Skip for connection
   // warnings (shimmer reads as "working"; Reconnecting/Disconnected is not).
@@ -469,7 +476,7 @@ function BriefSpinner({ mode, overrideMessage }: BriefSpinnerProps): React.React
           {before ? <Text dimColor>{before}</Text> : null}
           {shimmer ? <Text>{shimmer}</Text> : null}
           {after ? <Text dimColor>{after}</Text> : null}
-          <Text dimColor>{dots}</Text>
+          {!reducedMotion ? <AnimatedThinkingDots animated /> : <Text dimColor>… </Text>}
         </>
       )}
       {rightText ? (
@@ -519,6 +526,9 @@ export function Spinner(): React.ReactNode {
   const reducedMotion = settings.prefersReducedMotion ?? false;
   const [ref, time] = useAnimationFrame(reducedMotion ? null : 120);
 
+  // Gentle breathing amplitude for the dot
+  const breath = useBreath(!reducedMotion, 2000);
+
   // Reduced motion: static dot instead of animated spinner
   if (reducedMotion) {
     return (
@@ -528,12 +538,15 @@ export function Spinner(): React.ReactNode {
     );
   }
 
-  // Derive frame from synced time - all spinners animate together
+  // Smooth frame animation blended with breathing
   const frame = Math.floor(time / 120) % SPINNER_FRAMES.length;
+  const dim = 0.3 + breath * 0.7;
 
   return (
     <Box ref={ref} flexWrap="wrap" height={1} width={2}>
-      <Text color="text">{SPINNER_FRAMES[frame]}</Text>
+      <Text color="text" dimColor={dim < 0.5}>
+        {SPINNER_FRAMES[frame]}
+      </Text>
     </Box>
   );
 }

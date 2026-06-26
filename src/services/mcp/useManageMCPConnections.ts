@@ -592,7 +592,7 @@ export function useManageMCPConnections(
                   gate.kind === 'disabled'
                     ? 'Channels are not currently available'
                     : gate.kind === 'auth'
-                      ? 'Channels require claude.ai authentication · run /login'
+                      ? 'Channels require DeepSeek AI authentication · run /login'
                       : gate.kind === 'policy'
                         ? 'Channels are not enabled for your org · have an administrator set channelsEnabled: true in managed settings'
                         : gate.reason
@@ -760,7 +760,7 @@ export function useManageMCPConnections(
   // Re-runs on session change (/clear) and on /reload-plugins (pluginReconnectKey).
   // On plugin reload, also disconnects stale plugin MCP servers (scope 'dynamic')
   // that no longer appear in configs — prevents ghost tools from disabled plugins.
-  // Skip claude.ai dedup here to avoid blocking on the network fetch; the connect
+  // Skip DeepSeek AI dedup here to avoid blocking on the network fetch; the connect
   // useEffect below runs immediately after and dedups before connecting.
   const sessionId = getSessionId()
   useEffect(() => {
@@ -848,12 +848,12 @@ export function useManageMCPConnections(
   ])
 
   // Load MCP configs and connect to servers
-  // Two-phase loading: Claude Code configs first (fast), then claude.ai configs (may be slow)
+  // Two-phase loading: DeepSeek Code configs first (fast), then DeepSeek AI configs (may be slow)
   useEffect(() => {
     let cancelled = false
 
     async function loadAndConnectMcpConfigs() {
-      // Clear claude.ai MCP cache so we fetch fresh configs with current auth
+      // Clear DeepSeek AI MCP cache so we fetch fresh configs with current auth
       // state. This is important when authVersion changes (e.g., after login/
       // logout). Kick off the fetch now so it overlaps with loadAllPlugins()
       // inside getClaudeCodeMcpConfigs; it's awaited only at the dedup step.
@@ -866,8 +866,8 @@ export function useManageMCPConnections(
         claudeaiPromise = fetchClaudeAIMcpConfigsIfEligible()
       }
 
-      // Phase 1: Load Claude Code configs. Plugin MCP servers that duplicate a
-      // --mcp-config entry or a claude.ai connector are suppressed here so they
+      // Phase 1: Load DeepSeek Code configs. Plugin MCP servers that duplicate a
+      // --mcp-config entry or a DeepSeek AI connector are suppressed here so they
       // don't connect alongside the connector in Phase 2.
       const { servers: claudeCodeConfigs, errors: mcpErrors } =
         isStrictMcpConfig
@@ -880,7 +880,7 @@ export function useManageMCPConnections(
 
       const configs = { ...claudeCodeConfigs, ...dynamicMcpConfig }
 
-      // Start connecting to Claude Code servers (don't wait - runs concurrently with Phase 2)
+      // Start connecting to DeepSeek Code servers (don't wait - runs concurrently with Phase 2)
       // Filter out disabled servers to avoid unnecessary connection attempts
       const enabledConfigs = Object.fromEntries(
         Object.entries(configs).filter(([name]) => !isMcpServerDisabled(name)),
@@ -895,7 +895,7 @@ export function useManageMCPConnections(
         )
       })
 
-      // Phase 2: Await claude.ai configs (started above; memoized — no second fetch)
+      // Phase 2: Await DeepSeek AI configs (started above; memoized — no second fetch)
       let claudeaiConfigs: Record<string, ScopedMcpServerConfig> = {}
       if (!isStrictMcpConfig) {
         claudeaiConfigs = filterMcpServersByPolicy(
@@ -903,8 +903,8 @@ export function useManageMCPConnections(
         ).allowed
         if (cancelled) return
 
-        // Suppress claude.ai connectors that duplicate an enabled manual server.
-        // Keys never collide (`slack` vs `claude.ai Slack`) so the merge below
+        // Suppress DeepSeek AI connectors that duplicate an enabled manual server.
+        // Keys never collide (`slack` vs `DeepSeek AI Slack`) so the merge below
         // won't catch this — need content-based dedup by URL signature.
         if (Object.keys(claudeaiConfigs).length > 0) {
           const { servers: dedupedClaudeAi } = dedupClaudeAiMcpServers(
@@ -915,7 +915,7 @@ export function useManageMCPConnections(
         }
 
         if (Object.keys(claudeaiConfigs).length > 0) {
-          // Add claude.ai servers as pending immediately so they show up in UI
+          // Add DeepSeek AI servers as pending immediately so they show up in UI
           setAppState(prevState => {
             const existingServerNames = new Set(
               prevState.mcp.clients.map(c => c.name),
@@ -951,7 +951,7 @@ export function useManageMCPConnections(
           ).catch(error => {
             logMCPError(
               'useManageMcpConnections',
-              `Failed to get claude.ai MCP resources: ${errorMessage(error)}`,
+              `Failed to get DeepSeek AI MCP resources: ${errorMessage(error)}`,
             )
           })
         }

@@ -153,11 +153,7 @@ const forkCmd = feature('FORK_SUBAGENT')
       require('./commands/fork/index.js') as typeof import('./commands/fork/index.js')
     ).default
   : null
-const buddy = feature('BUDDY')
-  ? (
-      require('./commands/buddy/index.js') as typeof import('./commands/buddy/index.js')
-    ).default
-  : null
+const buddy = null
 const poor = feature('POOR')
   ? (
       require('./commands/poor/index.js') as typeof import('./commands/poor/index.js')
@@ -245,7 +241,7 @@ import effort from './commands/effort/index.js'
 const usageReport: Command = {
   type: 'prompt',
   name: 'insights',
-  description: 'Generate a report analyzing your Claude Code sessions',
+  description: 'Generate a report analyzing your DeepSeek Code sessions',
   contentLength: 0,
   progressMessage: 'analyzing your sessions',
   source: 'builtin',
@@ -509,7 +505,7 @@ export function meetsAvailabilityRequirement(cmd: Command): boolean {
         if (isClaudeAISubscriber()) return true
         break
       case 'console':
-        // Console API key user = direct 1P API customer (not 3P, not claude.ai).
+        // Console API key user = direct 1P API customer (not 3P, not DeepSeek AI).
         // Excludes 3P (Bedrock/Vertex/Foundry) who don't set ANTHROPIC_BASE_URL
         // and gateway users who proxy through a custom base URL.
         if (

@@ -1,10 +1,10 @@
 import type { ContentBlockParam } from '@anthropic-ai/sdk/resources/index.mjs';
 import type { Command } from '../commands.js';
-import { AGENT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/AgentTool/constants.js';
+import { AGENT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/AgentTool/constants.js';
 
 const statusline = {
   type: 'prompt',
-  description: "Set up Claude Code's status line UI",
+  description: "Set up DeepSeek Code's status line UI",
   contentLength: 0, // Dynamic content
   aliases: [],
   name: 'statusline',

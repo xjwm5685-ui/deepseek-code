@@ -162,7 +162,7 @@ function getServerUrl(config: McpServerConfig): string | null {
 }
 
 /**
- * CCR proxy URL path markers. In remote sessions, claude.ai connectors arrive
+ * CCR proxy URL path markers. In remote sessions, DeepSeek AI connectors arrive
  * via --mcp-config with URLs rewritten to route through the CCR/session-ingress
  * SHTTP proxy. The original vendor URL is preserved in the mcp_url query param
  * so the proxy knows where to forward. See api-go/ccr/internal/ccrshared/
@@ -266,11 +266,11 @@ export function dedupPluginMcpServers(
 }
 
 /**
- * Filter claude.ai connectors, dropping any whose signature matches an enabled
+ * Filter DeepSeek AI connectors, dropping any whose signature matches an enabled
  * manually-configured server. Manual wins: a user who wrote .mcp.json or ran
  * `claude mcp add` expressed higher intent than a connector toggled in the web UI.
  *
- * Connector keys are `claude.ai <DisplayName>` so they never key-collide with
+ * Connector keys are `DeepSeek AI <DisplayName>` so they never key-collide with
  * manual servers in the merge — this content-based check catches the case where
  * both point at the same underlying URL (e.g. `mcp__slack__*` and
  * `mcp__claude_ai_Slack__*` both hitting mcp.slack.com, ~600 chars/turn wasted).
@@ -299,7 +299,7 @@ export function dedupClaudeAiMcpServers(
     const manualDup = sig !== null ? manualSigs.get(sig) : undefined
     if (manualDup !== undefined) {
       logForDebugging(
-        `Suppressing claude.ai connector "${name}": duplicates manually-configured "${manualDup}"`,
+        `Suppressing DeepSeek AI connector "${name}": duplicates manually-configured "${manualDup}"`,
       )
       suppressed.push({ name, duplicateOf: manualDup })
       continue
@@ -1060,13 +1060,13 @@ export function getMcpConfigByName(name: string): ScopedMcpServerConfig | null {
 }
 
 /**
- * Get Claude Code MCP configurations (excludes claude.ai servers from the
+ * Get DeepSeek Code MCP configurations (excludes DeepSeek AI servers from the
  * returned set — they're fetched separately and merged by callers).
  * This is fast: only local file reads; no awaited network calls on the
  * critical path. The optional extraDedupTargets promise (e.g. the in-flight
- * claude.ai connector fetch) is awaited only after loadAllPluginsCacheOnly() completes,
+ * DeepSeek AI connector fetch) is awaited only after loadAllPluginsCacheOnly() completes,
  * so the two overlap rather than serialize.
- * @returns Claude Code server configurations with appropriate scopes
+ * @returns DeepSeek Code server configurations with appropriate scopes
  */
 export async function getClaudeCodeMcpConfigs(
   dynamicServers: Record<string, ScopedMcpServerConfig> = {},
@@ -1251,7 +1251,7 @@ export async function getClaudeCodeMcpConfigs(
 }
 
 /**
- * Get all MCP configurations across all scopes, including claude.ai servers.
+ * Get all MCP configurations across all scopes, including DeepSeek AI servers.
  * This may be slow due to network calls - use getClaudeCodeMcpConfigs() for fast startup.
  * @returns All server configurations with appropriate scopes
  */
@@ -1259,12 +1259,12 @@ export async function getAllMcpConfigs(): Promise<{
   servers: Record<string, ScopedMcpServerConfig>
   errors: PluginError[]
 }> {
-  // In enterprise mode, don't load claude.ai servers (enterprise has exclusive control)
+  // In enterprise mode, don't load DeepSeek AI servers (enterprise has exclusive control)
   if (doesEnterpriseMcpConfigExist()) {
     return getClaudeCodeMcpConfigs()
   }
 
-  // Kick off the claude.ai fetch before getClaudeCodeMcpConfigs so it overlaps
+  // Kick off the DeepSeek AI fetch before getClaudeCodeMcpConfigs so it overlaps
   // with loadAllPluginsCacheOnly() inside. Memoized — the awaited call below is a cache hit.
   const claudeaiPromise = fetchClaudeAIMcpConfigsIfEligible()
   const { servers: claudeCodeServers, errors } = await getClaudeCodeMcpConfigs(
@@ -1275,15 +1275,15 @@ export async function getAllMcpConfigs(): Promise<{
     await claudeaiPromise,
   )
 
-  // Suppress claude.ai connectors that duplicate an enabled manual server.
-  // Keys never collide (`slack` vs `claude.ai Slack`) so the merge below
+  // Suppress DeepSeek AI connectors that duplicate an enabled manual server.
+  // Keys never collide (`slack` vs `DeepSeek AI Slack`) so the merge below
   // won't catch this — need content-based dedup by URL signature.
   const { servers: dedupedClaudeAi } = dedupClaudeAiMcpServers(
     claudeaiMcpServers as Record<string, ScopedMcpServerConfig>,
     claudeCodeServers,
   )
 
-  // Merge with claude.ai having lowest precedence
+  // Merge with DeepSeek AI having lowest precedence
   const servers = Object.assign({}, dedupedClaudeAi, claudeCodeServers)
 
   return { servers, errors }

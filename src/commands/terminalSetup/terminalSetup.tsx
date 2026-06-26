@@ -40,7 +40,7 @@ const NATIVE_CSIU_TERMINALS: Record<string, string> = {
 /**
  * Detect if we're running in a VSCode Remote SSH session.
  * In this case, keybindings need to be installed on the LOCAL machine,
- * not the remote server where Claude is running.
+ * not the remote server where DeepSeek Code is running.
  */
 function isVSCodeRemoteSSH(): boolean {
   const askpassMain = process.env.VSCODE_GIT_ASKPASS_MAIN ?? '';
@@ -87,7 +87,7 @@ function formatPathLink(filePath: string): string {
 
 export function shouldOfferTerminalSetup(): boolean {
   // iTerm2, WezTerm, Ghostty, Kitty, and Warp natively support CSI u / Kitty
-  // keyboard protocol, which Claude Code already parses. No setup needed for
+  // keyboard protocol, which DeepSeek Code already parses. No setup needed for
   // these terminals.
   return (
     (platform() === 'darwin' && env.terminal === 'Apple_Terminal') ||

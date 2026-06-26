@@ -128,8 +128,8 @@ export type BaseAgentDefinition = {
   /** Omit CLAUDE.md hierarchy from the agent's userContext. Read-only agents
    * (Explore, Plan) don't need commit/PR/lint guidelines — the main agent has
    * full CLAUDE.md and interprets their output. Saves ~5-15 Gtok/week across
-   * 34M+ Explore spawns. Kill-switch: tengu_slim_subagent_claudemd. */
-  omitClaudeMd?: boolean
+   * 34M+ Explore spawns. Kill-switch: tengu_slim_subagent_deepseekmd. */
+  omitdeepseekmd?: boolean
 }
 
 // Built-in agents - dynamic prompts only, no static systemPrompt field

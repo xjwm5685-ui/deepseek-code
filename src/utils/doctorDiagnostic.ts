@@ -460,11 +460,11 @@ async function detectConfigurationIssues(
 
   // Check if running local installation but it's not in PATH
   if (type === 'npm-local') {
-    // Check if claude is already accessible via PATH
+    // Check if DeepSeek Code is already accessible via PATH
     const whichResult = await which('claude')
     const claudeInPath = !!whichResult
 
-    // Only show warning if claude is NOT in PATH AND no valid alias exists
+    // Only show warning if DeepSeek Code is NOT in PATH AND no valid alias exists
     if (!claudeInPath && !validAlias) {
       if (existingAlias) {
         // Alias exists but points to invalid target

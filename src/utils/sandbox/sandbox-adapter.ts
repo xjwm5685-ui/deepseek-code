@@ -1,6 +1,6 @@
 /**
- * Adapter layer that wraps @anthropic-ai/sandbox-runtime with Claude CLI-specific integrations.
- * This file provides the bridge between the external sandbox-runtime package and Claude CLI's
+ * Adapter layer that wraps @anthropic-ai/sandbox-runtime with DeepSeek CLI-specific integrations.
+ * This file provides the bridge between the external sandbox-runtime package and DeepSeek CLI's
  * settings system, tool integration, and additional features.
  */
 
@@ -25,7 +25,7 @@ import { readFile } from 'fs/promises'
 import { memoize } from 'lodash-es'
 import { join, resolve, sep } from 'path'
 import {
-  getAdditionalDirectoriesForClaudeMd,
+  getAdditionalDirectoriesFordeepseekmd,
   getCwdState,
   getOriginalCwd,
 } from '../../bootstrap/state.js'
@@ -49,10 +49,10 @@ import type { SettingsJson } from '../settings/types.js'
 // Settings Converter
 // ============================================================================
 
-import { BASH_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/BashTool/toolName.js'
-import { FILE_EDIT_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileEditTool/constants.js'
-import { FILE_READ_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/FileReadTool/prompt.js'
-import { WEB_FETCH_TOOL_NAME } from '@claude-code-best/builtin-tools/tools/WebFetchTool/prompt.js'
+import { BASH_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/BashTool/toolName.js'
+import { FILE_EDIT_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileEditTool/constants.js'
+import { FILE_READ_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/FileReadTool/prompt.js'
+import { WEB_FETCH_TOOL_NAME } from '@deepseek-code/builtin-tools/tools/WebFetchTool/prompt.js'
 import { errorMessage } from '../errors.js'
 import { getClaudeTempDir } from '../permissions/filesystem.js'
 import type { PermissionRuleValue } from '../permissions/PermissionRule.js'
@@ -81,9 +81,9 @@ function permissionRuleExtractPrefix(permissionRule: string): string | null {
 }
 
 /**
- * Resolve Claude Code-specific path patterns for sandbox-runtime.
+ * Resolve DeepSeek Code-specific path patterns for sandbox-runtime.
  *
- * Claude Code uses special path prefixes in permission rules:
+ * DeepSeek Code uses special path prefixes in permission rules:
  * - `//path` → absolute from filesystem root (becomes `/path`)
  * - `/path` → relative to settings file directory (becomes `$SETTINGS_DIR/path`)
  * - `~/path` → passed through (sandbox-runtime handles this)
@@ -164,7 +164,7 @@ function shouldAllowManagedReadPathsOnly(): boolean {
 }
 
 /**
- * Convert Claude Code settings format to SandboxRuntimeConfig format
+ * Convert DeepSeek Code settings format to SandboxRuntimeConfig format
  * (Function exported for testing)
  *
  * @param settings Merged settings (used for sandbox config like network, ripgrep, etc.)
@@ -228,7 +228,7 @@ export function convertToSandboxRuntimeConfig(
   const allowRead: string[] = []
 
   // Always deny writes to settings.json files to prevent sandbox escape
-  // This blocks settings in the original working directory (where Claude Code started)
+  // This blocks settings in the original working directory (where DeepSeek Code started)
   const settingsPaths = SETTING_SOURCES.map(source =>
     getSettingsFilePathForSource(source),
   ).filter((p): p is string => p !== undefined)
@@ -294,7 +294,7 @@ export function convertToSandboxRuntimeConfig(
   // Two sources: persisted in settings, and session-only in bootstrap state.
   const additionalDirs = new Set([
     ...(settings.permissions?.additionalDirectories || []),
-    ...getAdditionalDirectoriesForClaudeMd(),
+    ...getAdditionalDirectoriesFordeepseekmd(),
   ])
   allowWrite.push(...additionalDirs)
 
@@ -381,7 +381,7 @@ export function convertToSandboxRuntimeConfig(
 }
 
 // ============================================================================
-// Claude CLI-specific state
+// DeepSeek CLI-specific state
 // ============================================================================
 
 let initializationPromise: Promise<void> | undefined
@@ -823,7 +823,7 @@ async function reset(): Promise<void> {
 
 /**
  * Add a command to the excluded commands list (commands that should not be sandboxed)
- * This is a Claude CLI-specific function that updates local settings.
+ * This is a DeepSeek CLI-specific function that updates local settings.
  */
 export function addToExcludedCommands(
   command: string,
@@ -922,7 +922,7 @@ export interface ISandboxManager {
 }
 
 /**
- * Claude CLI sandbox manager - wraps sandbox-runtime with Claude-specific features
+ * DeepSeek CLI sandbox manager - wraps sandbox-runtime with Claude-specific features
  */
 export const SandboxManager: ISandboxManager = {
   // Custom implementations

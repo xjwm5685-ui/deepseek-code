@@ -200,7 +200,7 @@ export function getAuthTokenSource() {
 
   const oauthTokens = getClaudeAIOAuthTokens()
   if (shouldUseClaudeAIAuth(oauthTokens?.scopes) && oauthTokens?.accessToken) {
-    return { source: 'claude.ai' as const, hasToken: true }
+    return { source: 'DeepSeek AI' as const, hasToken: true }
   }
 
   return { source: 'none' as const, hasToken: false }
@@ -1331,7 +1331,7 @@ async function invalidateOAuthCacheIfDiskChanged(): Promise<void> {
   }
 }
 
-// In-flight dedup: when N claude.ai proxy connectors hit 401 with the same
+// In-flight dedup: when N DeepSeek AI proxy connectors hit 401 with the same
 // token simultaneously (common at startup — #20930), only one should clear
 // caches and re-read the keychain. Without this, each call's clearOAuthTokenCache()
 // nukes readInFlight in macOsKeychainStorage and triggers a fresh spawn —
@@ -1525,7 +1525,7 @@ async function checkAndRefreshOAuthTokenIfNeededImpl(
 
     logEvent('tengu_oauth_token_refresh_starting', {})
     const refreshedTokens = await refreshOAuthToken(lockedTokens.refreshToken, {
-      // For Claude.ai subscribers, omit scopes so the default
+      // For DeepSeek AI subscribers, omit scopes so the default
       // CLAUDE_AI_OAUTH_SCOPES applies — this allows scope expansion
       // (e.g. adding user:file_upload) on refresh without re-login.
       scopes: shouldUseClaudeAIAuth(lockedTokens.scopes)
@@ -1581,7 +1581,7 @@ export function hasProfileScope(): boolean {
 
 export function is1PApiCustomer(): boolean {
   // 1P API customers are users who are NOT:
-  // 1. Claude.ai subscribers (Max, Pro, Enterprise, Team)
+  // 1. DeepSeek AI subscribers (Max, Pro, Enterprise, Team)
   // 2. Vertex AI users
   // 3. AWS Bedrock users
   // 4. Foundry users
@@ -1595,7 +1595,7 @@ export function is1PApiCustomer(): boolean {
     return false
   }
 
-  // Exclude Claude.ai subscribers
+  // Exclude DeepSeek AI subscribers
   if (isClaudeAISubscriber()) {
     return false
   }
@@ -1899,7 +1899,7 @@ export function getAccountInformation() {
 
   // 如果我们依赖外部 API 密钥或认证令牌，则不知道组织
   if (
-    authTokenSource === 'claude.ai' ||
+    authTokenSource === 'DeepSeek AI' ||
     apiKeySource === '/login managed key'
   ) {
     // 从 OAuth 账户信息获取组织名称
@@ -1910,7 +1910,7 @@ export function getAccountInformation() {
   }
   const email = getOauthAccountInfo()?.emailAddress
   if (
-    (authTokenSource === 'claude.ai' ||
+    (authTokenSource === 'DeepSeek AI' ||
       apiKeySource === '/login managed key') &&
     email
   ) {

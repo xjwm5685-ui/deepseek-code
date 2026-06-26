@@ -238,7 +238,7 @@ export async function prepareWorkspaceApiRequest(): Promise<{
         'Press W in /login to save your key directly (no restart needed), or ' +
         'set ANTHROPIC_API_KEY=<key> and restart. ' +
         'Obtain a key from https://console.anthropic.com/settings/keys. ' +
-        'Subscription OAuth (claude.ai login) cannot reach these endpoints.',
+        'Subscription OAuth (DeepSeek AI login) cannot reach these endpoints.',
     )
   }
   if (!apiKey.startsWith('sk-ant-api03-')) {
@@ -263,7 +263,7 @@ export async function prepareApiRequest(): Promise<{
   const accessToken = getClaudeAIOAuthTokens()?.accessToken
   if (accessToken === undefined) {
     throw new Error(
-      'Claude Code web sessions require authentication with a Claude.ai account. API key authentication is not sufficient. Please run /login to authenticate, or check your authentication status with /status.',
+      'DeepSeek Code web sessions require authentication with a DeepSeek AI account. API key authentication is not sufficient. Please run /login to authenticate, or check your authentication status with /status.',
     )
   }
 

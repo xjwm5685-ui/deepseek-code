@@ -190,7 +190,7 @@ const connectFn = isDoubaoProvider()
 
 1. **双后端共存**：豆包后端作为独立适配器与 Anthropic 后端并存，不替换原有流程，通过 `voiceProvider` 设置切换
 2. **设置持久化**：`voiceProvider` 存储在 `settings.json`，通过 `/voice` 命令修改，跨会话生效
-3. **OAuth 独占（Anthropic）**：Anthropic 后端使用 `voice_stream` 端点（claude.ai），仅 OAuth 用户可用
+3. **OAuth 独占（Anthropic）**：Anthropic 后端使用 `voice_stream` 端点（DeepSeek AI），仅 OAuth 用户可用
 4. **豆包无需 OAuth**：豆包后端使用独立凭证文件，不依赖 Anthropic 认证，通过 `isVoiceAvailable()` 放宽门控
 5. **GrowthBook 负向门控**：`tengu_amber_quartz_disabled` 默认 `false`，新安装自动可用
 6. **onReady 立即触发**：豆包后端在连接建立后立即触发 `onReady`，避免与 useVoice 音频缓冲的时序死锁（Anthropic 需要等待 WebSocket 握手）
@@ -205,7 +205,7 @@ const connectFn = isDoubaoProvider()
 FEATURE_VOICE_MODE=1 bun run dev
 
 # 在 REPL 中使用 Anthropic 后端
-# 1. 确保已通过 OAuth 登录（claude.ai 订阅）
+# 1. 确保已通过 OAuth 登录（DeepSeek AI 订阅）
 # 2. 输入 /voice 启用
 # 3. 按住空格键说话
 # 4. 释放空格键等待转录
@@ -242,7 +242,7 @@ FEATURE_VOICE_MODE=1 bun run dev
 
 | 依赖 | 说明 | 适用后端 |
 |------|------|----------|
-| Anthropic OAuth | claude.ai 订阅登录，非 API key | Anthropic |
+| Anthropic OAuth | DeepSeek AI 订阅登录，非 API key | Anthropic |
 | GrowthBook | `tengu_amber_quartz_disabled` 紧急关闭 | 通用 |
 | macOS 原生音频 或 SoX | 音频录制 | 通用 |
 | Nova 3 STT | Anthropic 语音转文本模型 | Anthropic |

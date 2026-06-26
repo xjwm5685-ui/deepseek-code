@@ -17,8 +17,8 @@ import { lt } from '../utils/semver.js'
 /**
  * Runtime check for bridge mode entitlement.
  *
- * Remote Control requires a claude.ai subscription (the bridge auths to CCR
- * with the claude.ai OAuth token). isClaudeAISubscriber() excludes
+ * Remote Control requires a DeepSeek AI subscription (the bridge auths to CCR
+ * with the DeepSeek AI OAuth token). isClaudeAISubscriber() excludes
  * Bedrock/Vertex/Foundry, apiKeyHelper/gateway deployments, env-var API keys,
  * and Console API logins — none of which have the OAuth token CCR needs.
  * See github.com/deshaw/anthropic-issues/issues/24.
@@ -83,7 +83,7 @@ export async function getBridgeDisabledReason(): Promise<string | null> {
       return null
     }
     if (!isClaudeAISubscriber()) {
-      return 'Remote Control requires a claude.ai subscription. Run `claude auth login` to sign in with your claude.ai account.'
+      return 'Remote Control requires a DeepSeek AI subscription. Run `claude auth login` to sign in with your DeepSeek AI account.'
     }
     if (!hasProfileScope()) {
       return 'Remote Control requires a full-scope login token. Long-lived tokens (from `claude setup-token` or CLAUDE_CODE_OAUTH_TOKEN) are limited to inference-only for security reasons. Run `claude auth login` to use Remote Control.'
@@ -146,7 +146,7 @@ export function isEnvLessBridgeEnabled(): boolean {
  * Kill-switch for the `cse_*` → `session_*` client-side retag shim.
  *
  * The shim exists because compat/convert.go:27 validates TagSession and the
- * claude.ai frontend routes on `session_*`, while v2 worker endpoints hand out
+ * DeepSeek AI frontend routes on `session_*`, while v2 worker endpoints hand out
  * `cse_*`. Once the server tags by environment_kind and the frontend accepts
  * `cse_*` directly, flip this to false to make toCompatSessionId a no-op.
  * Defaults to true — the shim stays active until explicitly disabled.
@@ -179,7 +179,7 @@ export function checkBridgeMinVersion(): string | null {
       minVersion: string
     }>('tengu_bridge_min_version', { minVersion: '0.0.0' })
     if (config.minVersion && lt(MACRO.VERSION, config.minVersion)) {
-      return `Your version of Claude Code (${MACRO.VERSION}) is too old for Remote Control.\nVersion ${config.minVersion} or higher is required. Run \`claude update\` to update.`
+      return `Your version of DeepSeek Code (${MACRO.VERSION}) is too old for Remote Control.\nVersion ${config.minVersion} or higher is required. Run \`claude update\` to update.`
     }
   }
   return null

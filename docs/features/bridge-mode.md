@@ -6,14 +6,14 @@
 
 ## 一、功能概述
 
-BRIDGE_MODE 将本地 CLI 注册为"bridge 环境"，可从 claude.ai 或其他控制面远程驱动。本地终端变为一个"执行者"，接受远程指令并执行。
+BRIDGE_MODE 将本地 CLI 注册为"bridge 环境"，可从 DeepSeek AI 或其他控制面远程驱动。本地终端变为一个"执行者"，接受远程指令并执行。
 
 ### 核心特性
 
 - **环境注册**：本地 CLI 向 Anthropic 服务器注册为可用的 bridge 环境
 - **工作轮询**：长轮询（long-poll）等待远程任务分配
 - **会话管理**：创建、恢复、归档远程会话
-- **权限透传**：远程权限请求发送到控制面，用户在 claude.ai 上批准/拒绝
+- **权限透传**：远程权限请求发送到控制面，用户在 DeepSeek AI 上批准/拒绝
 - **心跳保活**：定期发送 heartbeat 延长任务租约
 - **可信设备**：v2 支持可信设备令牌增强安全性
 
@@ -65,7 +65,7 @@ Bridge API Client 提供 9 个核心操作：
 ### 2.5 数据流
 
 ```
-claude.ai 用户选择远程环境
+DeepSeek AI 用户选择远程环境
          │
          ▼
 POST /v1/environments/bridge (注册)
@@ -110,7 +110,7 @@ sessionRunner 创建 REPL session
 2. **OAuth 刷新内嵌**：API client 自带 `withOAuthRetry`，无需外层重试逻辑
 3. **ETag 条件请求**：注册时支持 `reuseEnvironmentId` 实现幂等会话恢复
 4. **v1/v2 共存**：代码中同时存在两套实现，v2 是更安全的升级版
-5. **权限双向流动**：本地权限请求发送到 claude.ai，用户在 web 上审批
+5. **权限双向流动**：本地权限请求发送到 DeepSeek AI，用户在 web 上审批
 
 ## 四、使用方式
 
@@ -129,7 +129,7 @@ FEATURE_BRIDGE_MODE=1 FEATURE_DAEMON=1 bun run dev
 
 | 依赖 | 说明 |
 |------|------|
-| Anthropic OAuth | claude.ai 订阅登录 |
+| Anthropic OAuth | DeepSeek AI 订阅登录 |
 | GrowthBook | `tengu_ccr_bridge` 门控 |
 | Bridge API | `/v1/environments/bridge` 系列端点 |
 

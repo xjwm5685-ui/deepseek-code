@@ -67,7 +67,7 @@ const MAX_CONSECUTIVE_INIT_FAILURES = 3;
  * Watches AppState.replBridgeEnabled — when toggled off (via /config or footer),
  * the bridge is torn down. When toggled back on, it re-initializes.
  *
- * Inbound messages from claude.ai are injected into the REPL via queuedCommands.
+ * Inbound messages from DeepSeek AI are injected into the REPL via queuedCommands.
  */
 export function useReplBridge(
   messages: Message[],
@@ -177,7 +177,7 @@ export function useReplBridge(
           const { initReplBridge } = await import('../bridge/initReplBridge.js');
           const { shouldShowAppUpgradeMessage } = await import('../bridge/envLessBridgeConfig.js');
 
-          // Assistant mode: perpetual bridge session — claude.ai shows one
+          // Assistant mode: perpetual bridge session — DeepSeek AI shows one
           // continuous conversation across CLI restarts instead of a new
           // session per invocation. initBridgeCore reads bridge-pointer.json
           // (the same crash-recovery file #20735 added) and reuses its
@@ -192,7 +192,7 @@ export function useReplBridge(
             perpetual = isAssistantMode();
           }
 
-          // When a user message arrives from claude.ai, inject it into the REPL.
+          // When a user message arrives from DeepSeek AI, inject it into the REPL.
           // Preserves the original UUID so that when the message is forwarded
           // back to CCR, it matches the original — avoiding duplicate messages.
           //

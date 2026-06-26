@@ -5,11 +5,12 @@ import {
   AGENT_COLOR_TO_THEME_COLOR,
   AGENT_COLORS,
   type AgentColorName,
-} from '@claude-code-best/builtin-tools/tools/AgentTool/agentColorManager.js';
+} from '@deepseek-code/builtin-tools/tools/AgentTool/agentColorManager.js';
 import type { PromptInputMode } from 'src/types/textInputTypes.js';
 import { getTeammateColor } from 'src/utils/teammate.js';
 import type { Theme } from 'src/utils/theme.js';
 import { isAgentSwarmsEnabled } from '../../utils/agentSwarmsEnabled.js';
+import { useBreath } from '../../hooks/useMicroAnimations.js';
 
 type Props = {
   mode: PromptInputMode;
@@ -52,8 +53,12 @@ function PromptChar({ isLoading, themeColor }: PromptCharProps): React.ReactNode
   const isAnt = process.env.USER_TYPE === 'ant';
   const color = teammateColor ?? (isAnt ? 'subtle' : undefined);
 
+  // Gentle breathing pulse when idle, dim when loading
+  const breath = useBreath(!isLoading, 2500);
+  const dimAmount = isLoading ? 1 : 0.3 + breath * 0.4;
+
   return (
-    <Text color={color} dimColor={isLoading}>
+    <Text color={color} dimColor={dimAmount > 0.5}>
       {figures.pointer}&nbsp;
     </Text>
   );

@@ -1,4 +1,4 @@
-# Claude Code 远程服务器依赖
+# DeepSeek Code 远程服务器依赖
 
 > 只列出代码中实际发起网络请求的远程服务。本地服务、npm 包依赖、展示用 URL 不包含在内。
 
@@ -10,7 +10,7 @@
 | 2 | AWS Bedrock | `bedrock-runtime.*.amazonaws.com` | HTTPS | 需 `CLAUDE_CODE_USE_BEDROCK=1` |
 | 3 | Google Vertex AI | `{region}-aiplatform.googleapis.com` | HTTPS | 需 `CLAUDE_CODE_USE_VERTEX=1` |
 | 4 | Azure Foundry | `{resource}.services.ai.azure.com` | HTTPS | 需 `CLAUDE_CODE_USE_FOUNDRY=1` |
-| 5 | OAuth (Anthropic) | `platform.claude.com`, `claude.com`, `claude.ai` | HTTPS | 用户登录时 |
+| 5 | OAuth (Anthropic) | `platform.claude.com`, `claude.com`, `DeepSeek AI` | HTTPS | 用户登录时 |
 | 6 | GrowthBook | `api.anthropic.com` (remoteEval) | HTTPS | 默认启用 |
 | 7 | Sentry | 可配置 (`SENTRY_DSN`) | HTTPS | 需设环境变量 |
 | 8 | Datadog | 可配置 (`DATADOG_LOGS_ENDPOINT`) | HTTPS | 需设环境变量 |
@@ -64,7 +64,7 @@ OAuth 2.0 + PKCE 授权码流程。
 
 - **端点**:
   - `https://platform.claude.com/oauth/authorize` — 授权页
-  - `https://claude.com/cai/oauth/authorize` — Claude.ai 授权
+  - `https://claude.com/cai/oauth/authorize` — DeepSeek AI 授权
   - `https://platform.claude.com/v1/oauth/token` — Token 交换
   - `https://api.anthropic.com/api/oauth/claude_cli/create_api_key` — 创建 API Key
   - `https://api.anthropic.com/api/oauth/claude_cli/roles` — 获取角色
@@ -111,7 +111,7 @@ OAuth 2.0 + PKCE 授权码流程。
 Anthropic 托管的 MCP 服务器代理。
 
 - **端点**: `https://mcp-proxy.anthropic.com/v1/mcp/{server_id}`
-- **认证**: Claude.ai OAuth tokens
+- **认证**: DeepSeek AI OAuth tokens
 - **文件**: `src/services/mcp/client.ts`, `src/constants/oauth.ts`
 
 ### 13. MCP Registry
@@ -210,5 +210,5 @@ WebSearch 工具支持直接抓取 Bing 搜索结果页面，也支持通过 Bra
 | `raw.githubusercontent.com` | Changelog / 插件统计 | HTTPS |
 | `bridge.claudeusercontent.com` | Chrome Bridge | WSS |
 | `platform.claude.com` | OAuth 授权页 | HTTPS |
-| `claude.com` / `claude.ai` | OAuth / 下载 | HTTPS |
+| `claude.com` / `DeepSeek AI` | OAuth / 下载 | HTTPS |
 | `claude.fedstart.com` | FedStart OAuth | HTTPS |

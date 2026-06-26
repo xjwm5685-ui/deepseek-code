@@ -91,15 +91,15 @@ bun run dev
 
 ---
 
-## C 组 — Subscription OAuth（已 `/login` claude.ai）
+## C 组 — Subscription OAuth（已 `/login` DeepSeek AI）
 
-**前置**：`/login` 完成 claude.ai OAuth；`/login` 显示 `☑ Subscription`
+**前置**：`/login` 完成 DeepSeek AI OAuth；`/login` 显示 `☑ Subscription`
 
 | # | 命令 | 输入 | 期望输出 | 通过 |
 |---|---|---|---|---|
 | C1 | `/login` | 无参 | **3 plane summary**：☑ Subscription、☐/☑ Workspace API key、4 third-party providers（PR-4 新增） | ☐ |
 | C2 | `/teleport` | 无参 | 列最近 sessions（list-style picker） | ☐ |
-| C3 | `/teleport <session-uuid>` | 参数 | resume from claude.ai | ☐ |
+| C3 | `/teleport <session-uuid>` | 参数 | resume from DeepSeek AI | ☐ |
 | C4 | `/tp <session-uuid>` | alias | 同 C3 | ☐ |
 | C5 | `/teleport <session-uuid> --print` | flag | print mode 直接输出 session URL | ☐ |
 | C6 | `/autofix-pr 386` | PR# | CCR 派发，输出 sessionUrl | ☐ |

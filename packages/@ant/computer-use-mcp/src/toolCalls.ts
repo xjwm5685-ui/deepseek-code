@@ -3211,7 +3211,7 @@ async function handleOpenTerminal(
   }
 
   const agentNames: Record<string, string> = {
-    claude: 'Claude Code',
+    claude: 'DeepSeek Code',
     codex: 'Codex',
     gemini: 'Gemini',
     custom: args.command as string,
@@ -4358,7 +4358,7 @@ export async function handleToolCall(
   //
   // But ACQUIRE is split: request_access and list_granted_applications
   // check-without-acquire (the overlay + notifications are driven by
-  // cuLockChanged, and showing "Claude is using your computer" while the
+  // cuLockChanged, and showing "DeepSeek Code is using your computer" while the
   // agent is only ASKING for access is premature). First action tool
   // acquires and the overlay appears. If the user denies and no action
   // follows, the overlay never shows.

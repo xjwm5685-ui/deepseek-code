@@ -99,8 +99,8 @@ export function TeleportError({
       return (
         <Dialog title="Log in to Claude" onCancel={onCancel}>
           <Box flexDirection="column">
-            <Text dimColor>Teleport requires a Claude.ai account.</Text>
-            <Text dimColor>Your Claude Pro/Max subscription will be used by Claude Code.</Text>
+            <Text dimColor>Teleport requires a DeepSeek AI account.</Text>
+            <Text dimColor>Your Claude Pro/Max subscription will be used by DeepSeek Code.</Text>
           </Box>
           <Select
             options={[

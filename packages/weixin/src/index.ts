@@ -1,4 +1,4 @@
-// @claude-code-best/weixin — WeChat channel integration
+// @deepseek-code/weixin — WeChat channel integration
 
 // Types
 export {

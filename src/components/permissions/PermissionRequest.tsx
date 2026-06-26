@@ -1,21 +1,21 @@
 import { feature } from 'bun:bundle';
 import * as React from 'react';
-import { EnterPlanModeTool } from '@claude-code-best/builtin-tools/tools/EnterPlanModeTool/EnterPlanModeTool.js';
-import { ExitPlanModeV2Tool } from '@claude-code-best/builtin-tools/tools/ExitPlanModeTool/ExitPlanModeV2Tool.js';
+import { EnterPlanModeTool } from '@deepseek-code/builtin-tools/tools/EnterPlanModeTool/EnterPlanModeTool.js';
+import { ExitPlanModeV2Tool } from '@deepseek-code/builtin-tools/tools/ExitPlanModeTool/ExitPlanModeV2Tool.js';
 import { useNotifyAfterTimeout } from '../../hooks/useNotifyAfterTimeout.js';
 import { useKeybinding } from '../../keybindings/useKeybinding.js';
 import type { AnyObject, Tool, ToolUseContext } from '../../Tool.js';
-import { AskUserQuestionTool } from '@claude-code-best/builtin-tools/tools/AskUserQuestionTool/AskUserQuestionTool.js';
-import { BashTool } from '@claude-code-best/builtin-tools/tools/BashTool/BashTool.js';
-import { FileEditTool } from '@claude-code-best/builtin-tools/tools/FileEditTool/FileEditTool.js';
-import { FileReadTool } from '@claude-code-best/builtin-tools/tools/FileReadTool/FileReadTool.js';
-import { FileWriteTool } from '@claude-code-best/builtin-tools/tools/FileWriteTool/FileWriteTool.js';
-import { GlobTool } from '@claude-code-best/builtin-tools/tools/GlobTool/GlobTool.js';
-import { GrepTool } from '@claude-code-best/builtin-tools/tools/GrepTool/GrepTool.js';
-import { NotebookEditTool } from '@claude-code-best/builtin-tools/tools/NotebookEditTool/NotebookEditTool.js';
-import { PowerShellTool } from '@claude-code-best/builtin-tools/tools/PowerShellTool/PowerShellTool.js';
-import { SkillTool } from '@claude-code-best/builtin-tools/tools/SkillTool/SkillTool.js';
-import { WebFetchTool } from '@claude-code-best/builtin-tools/tools/WebFetchTool/WebFetchTool.js';
+import { AskUserQuestionTool } from '@deepseek-code/builtin-tools/tools/AskUserQuestionTool/AskUserQuestionTool.js';
+import { BashTool } from '@deepseek-code/builtin-tools/tools/BashTool/BashTool.js';
+import { FileEditTool } from '@deepseek-code/builtin-tools/tools/FileEditTool/FileEditTool.js';
+import { FileReadTool } from '@deepseek-code/builtin-tools/tools/FileReadTool/FileReadTool.js';
+import { FileWriteTool } from '@deepseek-code/builtin-tools/tools/FileWriteTool/FileWriteTool.js';
+import { GlobTool } from '@deepseek-code/builtin-tools/tools/GlobTool/GlobTool.js';
+import { GrepTool } from '@deepseek-code/builtin-tools/tools/GrepTool/GrepTool.js';
+import { NotebookEditTool } from '@deepseek-code/builtin-tools/tools/NotebookEditTool/NotebookEditTool.js';
+import { PowerShellTool } from '@deepseek-code/builtin-tools/tools/PowerShellTool/PowerShellTool.js';
+import { SkillTool } from '@deepseek-code/builtin-tools/tools/SkillTool/SkillTool.js';
+import { WebFetchTool } from '@deepseek-code/builtin-tools/tools/WebFetchTool/WebFetchTool.js';
 import type { AssistantMessage } from '../../types/message.js';
 import type { PermissionDecision } from '../../utils/permissions/PermissionResult.js';
 import { AskUserQuestionPermissionRequest } from './AskUserQuestionPermissionRequest/AskUserQuestionPermissionRequest.js';
@@ -34,7 +34,7 @@ import { WebFetchPermissionRequest } from './WebFetchPermissionRequest/WebFetchP
 /* eslint-disable @typescript-eslint/no-require-imports */
 const ReviewArtifactTool = feature('REVIEW_ARTIFACT')
   ? (
-      require('@claude-code-best/builtin-tools/tools/ReviewArtifactTool/ReviewArtifactTool.js') as typeof import('@claude-code-best/builtin-tools/tools/ReviewArtifactTool/ReviewArtifactTool.js')
+      require('@deepseek-code/builtin-tools/tools/ReviewArtifactTool/ReviewArtifactTool.js') as typeof import('@deepseek-code/builtin-tools/tools/ReviewArtifactTool/ReviewArtifactTool.js')
     ).ReviewArtifactTool
   : null;
 
@@ -56,7 +56,7 @@ const WorkflowPermissionRequest = feature('WORKFLOW_SCRIPTS')
 
 const MonitorTool = feature('MONITOR_TOOL')
   ? (
-      require('@claude-code-best/builtin-tools/tools/MonitorTool/MonitorTool.js') as typeof import('@claude-code-best/builtin-tools/tools/MonitorTool/MonitorTool.js')
+      require('@deepseek-code/builtin-tools/tools/MonitorTool/MonitorTool.js') as typeof import('@deepseek-code/builtin-tools/tools/MonitorTool/MonitorTool.js')
     ).MonitorTool
   : null;
 
@@ -165,11 +165,11 @@ function getNotificationMessage(toolUseConfirm: ToolUseConfirm): string {
   const toolName = toolUseConfirm.tool.userFacingName(toolUseConfirm.input as never);
 
   if (toolUseConfirm.tool === ExitPlanModeV2Tool) {
-    return 'Claude Code needs your approval for the plan';
+    return 'DeepSeek Code needs your approval for the plan';
   }
 
   if (toolUseConfirm.tool === EnterPlanModeTool) {
-    return 'Claude Code wants to enter plan mode';
+    return 'DeepSeek Code wants to enter plan mode';
   }
 
   if (feature('REVIEW_ARTIFACT') && toolUseConfirm.tool === ReviewArtifactTool) {
@@ -177,7 +177,7 @@ function getNotificationMessage(toolUseConfirm: ToolUseConfirm): string {
   }
 
   if (!toolName || toolName.trim() === '') {
-    return 'Claude Code needs your attention';
+    return 'DeepSeek Code needs your attention';
   }
 
   return `Claude needs your permission to use ${toolName}`;

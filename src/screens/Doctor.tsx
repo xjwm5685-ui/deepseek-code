@@ -188,7 +188,7 @@ export function Doctor({ onDone }: Props): React.ReactNode {
   }, [toolPermissionContext, tools, agentDefinitions]);
 
   const handleDismiss = useCallback(() => {
-    onDone('Claude Code diagnostics dismissed', { display: 'system' });
+    onDone('DeepSeek Code diagnostics dismissed', { display: 'system' });
   }, [onDone]);
 
   // Handle dismiss via keybindings (Enter, Escape, or Ctrl+C)
@@ -380,20 +380,20 @@ export function Doctor({ onDone }: Props): React.ReactNode {
 
       {/* Context Usage Warnings */}
       {contextWarnings &&
-        (contextWarnings.claudeMdWarning || contextWarnings.agentWarning || contextWarnings.mcpWarning) && (
+        (contextWarnings.deepseekmdWarning || contextWarnings.agentWarning || contextWarnings.mcpWarning) && (
           <Box flexDirection="column">
             <Text bold>Context Usage Warnings</Text>
 
-            {contextWarnings.claudeMdWarning && (
+            {contextWarnings.deepseekmdWarning && (
               <>
                 <Text>
                   └{' '}
                   <Text color="warning">
-                    {figures.warning} {contextWarnings.claudeMdWarning.message}
+                    {figures.warning} {contextWarnings.deepseekmdWarning.message}
                   </Text>
                 </Text>
                 <Text>{'  '}└ Files:</Text>
-                {contextWarnings.claudeMdWarning.details.map((detail, i) => (
+                {contextWarnings.deepseekmdWarning.details.map((detail, i) => (
                   <Text key={i} dimColor>
                     {'    '}└ {detail}
                   </Text>

@@ -60,7 +60,7 @@ import type { ToolInputJSONSchema } from './Tool.js';
 import {
   createSyntheticOutputTool,
   isSyntheticOutputToolEnabled,
-} from '@claude-code-best/builtin-tools/tools/SyntheticOutputTool/SyntheticOutputTool.js';
+} from '@deepseek-code/builtin-tools/tools/SyntheticOutputTool/SyntheticOutputTool.js';
 import { getTools } from './tools.js';
 import {
   canUserConfigureAdvisor,
@@ -137,7 +137,7 @@ import {
 import { initializeAnalyticsGates } from 'src/services/analytics/sink.js';
 import {
   getOriginalCwd,
-  setAdditionalDirectoriesForClaudeMd,
+  setAdditionalDirectoriesFordeepseekmd,
   setIsRemoteMode,
   setMainLoopModelOverride,
   setMainThreadAgentType,
@@ -168,14 +168,14 @@ import { checkQuotaStatus } from './services/claudeAiLimits.js';
 import { getMcpToolsCommandsAndResources, prefetchAllMcpResources } from './services/mcp/client.js';
 import { VALID_INSTALLABLE_SCOPES, VALID_UPDATE_SCOPES } from './services/plugins/pluginCliCommands.js';
 import { initBundledSkills } from './skills/bundled/index.js';
-import type { AgentColorName } from '@claude-code-best/builtin-tools/tools/AgentTool/agentColorManager.js';
+import type { AgentColorName } from '@deepseek-code/builtin-tools/tools/AgentTool/agentColorManager.js';
 import {
   getActiveAgentsFromList,
   getAgentDefinitionsWithOverrides,
   isBuiltInAgent,
   isCustomAgent,
   parseAgentsFromJson,
-} from '@claude-code-best/builtin-tools/tools/AgentTool/loadAgentsDir.js';
+} from '@deepseek-code/builtin-tools/tools/AgentTool/loadAgentsDir.js';
 import type { LogOption } from './types/logs.js';
 import type { Message as MessageType } from './types/message.js';
 import {
@@ -1149,7 +1149,7 @@ async function run(): Promise<CommanderCommand> {
 
   program
     .name('claude')
-    .description(`Claude Code - starts an interactive session by default, use -p/--print for non-interactive output`)
+    .description(`DeepSeek Code - starts an interactive session by default, use -p/--print for non-interactive output`)
     .argument('[prompt]', 'Your prompt', String)
     // Subcommands inherit helpOption via commander's copyInheritedSettings —
     // setting it once here covers mcp, plugin, auth, and all other subcommands.
@@ -1173,7 +1173,7 @@ async function run(): Promise<CommanderCommand> {
     .option('--verbose', 'Override verbose mode setting from config', () => true)
     .option(
       '-p, --print',
-      'Print response and exit (useful for pipes). Note: The workspace trust dialog is skipped when Claude is run with the -p mode. Only use this flag in directories you trust.',
+      'Print response and exit (useful for pipes). Note: The workspace trust dialog is skipped when DeepSeek Code is run with the -p mode. Only use this flag in directories you trust.',
       () => true,
     )
     .option(
@@ -1444,7 +1444,7 @@ async function run(): Promise<CommanderCommand> {
       // Ignore "code" as a prompt - treat it the same as no prompt
       if (prompt === 'code') {
         logEvent('tengu_code_prompt_ignored', {});
-        console.warn(chalk.yellow('Tip: You can launch Claude Code with just `claude`'));
+        console.warn(chalk.yellow('Tip: You can launch DeepSeek Code with just `claude`'));
         prompt = undefined;
       }
 
@@ -1986,7 +1986,7 @@ async function run(): Promise<CommanderCommand> {
         }
       }
 
-      // Extract Claude in Chrome option and enforce claude.ai subscriber check (unless user is ant)
+      // Extract Claude in Chrome option and enforce DeepSeek AI subscriber check (unless user is ant)
       const chromeOpts = options as { chrome?: boolean };
       // Store the explicit CLI flag so teammates can inherit it
       setChromeFlagOverride(chromeOpts.chrome);
@@ -2095,7 +2095,7 @@ async function run(): Promise<CommanderCommand> {
       }
 
       // Store additional directories for CLAUDE.md loading (controlled by env var)
-      setAdditionalDirectoriesForClaudeMd(addDir);
+      setAdditionalDirectoriesFordeepseekmd(addDir);
 
       // Channel server allowlist from --channels flag — servers whose
       // inbound push notifications should register this session. The option
@@ -2197,9 +2197,9 @@ async function run(): Promise<CommanderCommand> {
       if ((feature('KAIROS') || feature('KAIROS_BRIEF')) && baseTools.length > 0) {
         /* eslint-disable @typescript-eslint/no-require-imports */
         const { BRIEF_TOOL_NAME, LEGACY_BRIEF_TOOL_NAME } =
-          require('@claude-code-best/builtin-tools/tools/BriefTool/prompt.js') as typeof import('@claude-code-best/builtin-tools/tools/BriefTool/prompt.js');
+          require('@deepseek-code/builtin-tools/tools/BriefTool/prompt.js') as typeof import('@deepseek-code/builtin-tools/tools/BriefTool/prompt.js');
         const { isBriefEntitled } =
-          require('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js');
+          require('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js');
         /* eslint-enable @typescript-eslint/no-require-imports */
         const parsed = parseToolListFromCLI(baseTools);
         if ((parsed.includes(BRIEF_TOOL_NAME) || parsed.includes(LEGACY_BRIEF_TOOL_NAME)) && isBriefEntitled()) {
@@ -2240,7 +2240,7 @@ async function run(): Promise<CommanderCommand> {
         console.error(warning);
       });
 
-      // claude.ai config fetch: -p mode only (interactive uses useManageMCPConnections
+      // DeepSeek AI config fetch: -p mode only (interactive uses useManageMCPConnections
       // two-phase loading). Kicked off here to overlap with setup(); awaited
       // before runHeadless so single-turn -p sees connectors. Skipped under
       // enterprise/strict MCP to preserve policy boundaries.
@@ -2248,7 +2248,7 @@ async function run(): Promise<CommanderCommand> {
         isNonInteractiveSession &&
         !strictMcpConfig &&
         !doesEnterpriseMcpConfigExist() &&
-        // --bare / SIMPLE: skip claude.ai proxy servers (datadog, Gmail,
+        // --bare / SIMPLE: skip DeepSeek AI proxy servers (datadog, Gmail,
         // Slack, BigQuery, PubMed — 6-14s each to connect). Scripted calls
         // that need MCP pass --mcp-config explicitly.
         !isBareMode()
@@ -2256,7 +2256,7 @@ async function run(): Promise<CommanderCommand> {
               const { allowed, blocked } = filterMcpServersByPolicy(configs);
               if (blocked.length > 0) {
                 process.stderr.write(
-                  `Warning: claude.ai MCP ${plural(blocked.length, 'server')} blocked by enterprise policy: ${blocked.join(', ')}\n`,
+                  `Warning: DeepSeek AI MCP ${plural(blocked.length, 'server')} blocked by enterprise policy: ${blocked.join(', ')}\n`,
                 );
               }
               return allowed;
@@ -2706,7 +2706,7 @@ async function run(): Promise<CommanderCommand> {
       ) {
         /* eslint-disable @typescript-eslint/no-require-imports */
         const { isBriefEntitled } =
-          require('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js');
+          require('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js');
         /* eslint-enable @typescript-eslint/no-require-imports */
         if (isBriefEntitled()) {
           setUserMsgOptIn(true);
@@ -2724,7 +2724,7 @@ async function run(): Promise<CommanderCommand> {
         const briefVisibility =
           feature('KAIROS') || feature('KAIROS_BRIEF')
             ? (
-                require('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js')
+                require('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js')
               ).isBriefEnabled()
               ? 'Call SendUserMessage at checkpoints to mark where things stand.'
               : 'The user will see any text you output.'
@@ -2824,7 +2824,7 @@ async function run(): Promise<CommanderCommand> {
           void refreshPolicyLimits();
           // Clear user data cache BEFORE GrowthBook refresh so it picks up fresh credentials
           resetUserCache();
-          // Refresh GrowthBook after login to get updated feature flags (e.g., for claude.ai MCPs)
+          // Refresh GrowthBook after login to get updated feature flags (e.g., for DeepSeek AI MCPs)
           refreshGrowthBookAfterAuthChange();
           // Clear any stale trusted device token then enroll for Remote Control.
           // Both self-gate on tengu_sessions_elevated_auth_enforcement internally
@@ -3267,14 +3267,14 @@ async function run(): Promise<CommanderCommand> {
         // message and turn-1 tool list both need configured MCP tools present.
         // Zero-server case is free via the early return in connectMcpBatch.
         // Connectors parallelize inside getMcpToolsCommandsAndResources
-        // (processBatched with Promise.all). claude.ai is awaited too — its
+        // (processBatched with Promise.all). DeepSeek AI is awaited too — its
         // fetch was kicked off early (line ~2558) so only residual time blocks
-        // here. --bare skips claude.ai entirely for perf-sensitive scripts.
+        // here. --bare skips DeepSeek AI entirely for perf-sensitive scripts.
         profileCheckpoint('before_connectMcp');
         await connectMcpBatch(regularMcpConfigs, 'regular');
         profileCheckpoint('after_connectMcp');
-        // Dedup: suppress plugin MCP servers that duplicate a claude.ai
-        // connector (connector wins), then connect claude.ai servers.
+        // Dedup: suppress plugin MCP servers that duplicate a DeepSeek AI
+        // connector (connector wins), then connect DeepSeek AI servers.
         // Bounded wait — #23725 made this blocking so single-turn -p sees
         // connectors, but with 40+ slow connectors tengu_startup_perf p99
         // climbed to 76s. If fetch+connect doesn't finish in time, proceed;
@@ -3296,7 +3296,7 @@ async function run(): Promise<CommanderCommand> {
             }
             if (suppressed.size > 0) {
               logForDebugging(
-                `[MCP] Lazy dedup: suppressing ${suppressed.size} plugin server(s) that duplicate claude.ai connectors: ${[...suppressed].join(', ')}`,
+                `[MCP] Lazy dedup: suppressing ${suppressed.size} plugin server(s) that duplicate DeepSeek AI connectors: ${[...suppressed].join(', ')}`,
               );
               // Disconnect before filtering from state. Only connected
               // servers need cleanup — clearServerCache on a never-connected
@@ -3328,11 +3328,11 @@ async function run(): Promise<CommanderCommand> {
               });
             }
           }
-          // Suppress claude.ai connectors that duplicate an enabled
+          // Suppress DeepSeek AI connectors that duplicate an enabled
           // manual server (URL-signature match). Plugin dedup above only
           // handles `plugin:*` keys; this catches manual `.mcp.json` entries.
           // plugin:* must be excluded here — step 1 already suppressed
-          // those (claude.ai wins); leaving them in suppresses the
+          // those (DeepSeek AI wins); leaving them in suppresses the
           // connector too, and neither survives (gh-39974).
           const nonPluginConfigs = pickBy(regularMcpConfigs, (_, n) => !n.startsWith('plugin:'));
           const { servers: dedupedClaudeAi } = dedupClaudeAiMcpServers(claudeaiConfigs, nonPluginConfigs);
@@ -3348,7 +3348,7 @@ async function run(): Promise<CommanderCommand> {
         if (claudeaiTimer) clearTimeout(claudeaiTimer);
         if (claudeaiTimedOut) {
           logForDebugging(
-            `[MCP] claude.ai connectors not ready after ${CLAUDE_AI_MCP_TIMEOUT_MS}ms — proceeding; background connection continues`,
+            `[MCP] DeepSeek AI connectors not ready after ${CLAUDE_AI_MCP_TIMEOUT_MS}ms — proceeding; background connection continues`,
           );
         }
         profileCheckpoint('after_connectMcp_claudeai');
@@ -4030,7 +4030,7 @@ async function run(): Promise<CommanderCommand> {
           }
         }
 
-        // --remote and --teleport both create/resume Claude Code Web (CCR) sessions.
+        // --remote and --teleport both create/resume DeepSeek Code Web (CCR) sessions.
         // Remote Control (--rc) is a separate feature gated in initReplBridge.ts.
         if (remote !== null || teleport) {
           await waitForPolicyLimitsToLoad();
@@ -4458,7 +4458,7 @@ async function run(): Promise<CommanderCommand> {
         );
       }
     })
-    .version(`${MACRO.VERSION} (Claude Code)`, '-v, --version', 'Output the version number');
+    .version(`${MACRO.VERSION} (DeepSeek Code)`, '-v, --version', 'Output the version number');
 
   // Worktree flags
   program.option('-w, --worktree [name]', 'Create a new git worktree for this session (optionally specify a name)');
@@ -4619,7 +4619,7 @@ async function run(): Promise<CommanderCommand> {
 
   mcp
     .command('serve')
-    .description(`Start the Claude Code MCP server`)
+    .description(`Start the DeepSeek Code MCP server`)
     .option('-d, --debug', 'Enable debug mode', () => true)
     .option('--verbose', 'Override verbose mode setting from config', () => true)
     .action(async ({ debug, verbose }: { debug?: boolean; verbose?: boolean }) => {
@@ -4697,7 +4697,7 @@ async function run(): Promise<CommanderCommand> {
   if (feature('DIRECT_CONNECT')) {
     program
       .command('server')
-      .description('Start a Claude Code session server')
+      .description('Start a DeepSeek Code session server')
       .option('--port <number>', 'HTTP port', '0')
       .option('--host <string>', 'Bind address', '0.0.0.0')
       .option('--auth-token <token>', 'Bearer token for auth')
@@ -4785,7 +4785,7 @@ async function run(): Promise<CommanderCommand> {
     program
       .command('ssh <host> [dir]')
       .description(
-        'Run Claude Code on a remote host over SSH. Deploys the binary and ' +
+        'Run DeepSeek Code on a remote host over SSH. Deploys the binary and ' +
           'tunnels API auth back through your local machine — no remote setup needed.',
       )
       .option('--permission-mode <mode>', 'Permission mode for the remote session')
@@ -4806,7 +4806,7 @@ async function run(): Promise<CommanderCommand> {
         // rewrite predicate didn't match.
         process.stderr.write(
           'Usage: claude ssh <user@host | ssh-config-alias> [dir]\n\n' +
-            "Runs Claude Code on a remote Linux host. You don't need to install\n" +
+            "Runs DeepSeek Code on a remote Linux host. You don't need to install\n" +
             'anything on the remote or run `claude auth login` there — the binary is\n' +
             'deployed over SSH and API auth tunnels back through your local machine.\n',
         );
@@ -4820,7 +4820,7 @@ async function run(): Promise<CommanderCommand> {
   if (feature('DIRECT_CONNECT')) {
     program
       .command('open <cc-url>')
-      .description('Connect to a Claude Code server (internal — use cc:// URLs)')
+      .description('Connect to a DeepSeek Code server (internal — use cc:// URLs)')
       .option('-p, --print [prompt]', 'Print mode (headless)')
       .option('--output-format <format>', 'Output format: text, json, stream-json', 'text')
       .action(
@@ -4921,7 +4921,7 @@ async function run(): Promise<CommanderCommand> {
   const pluginCmd = program
     .command('plugin')
     .alias('plugins')
-    .description('Manage Claude Code plugins')
+    .description('Manage DeepSeek Code plugins')
     .configureHelp(createSortedHelpConfig());
 
   pluginCmd
@@ -4948,7 +4948,7 @@ async function run(): Promise<CommanderCommand> {
   // Marketplace subcommands
   const marketplaceCmd = pluginCmd
     .command('marketplace')
-    .description('Manage Claude Code marketplaces')
+    .description('Manage DeepSeek Code marketplaces')
     .configureHelp(createSortedHelpConfig());
 
   marketplaceCmd
@@ -5238,7 +5238,7 @@ async function run(): Promise<CommanderCommand> {
   program
     .command('doctor')
     .description(
-      'Check the health of your Claude Code auto-updater. Note: The workspace trust dialog is skipped and stdio servers from .mcp.json are spawned for health checks. Only use this command in directories you trust.',
+      'Check the health of your DeepSeek Code auto-updater. Note: The workspace trust dialog is skipped and stdio servers from .mcp.json are spawned for health checks. Only use this command in directories you trust.',
     )
     .action(async () => {
       const [{ doctorHandler }, { createRoot }] = await Promise.all([
@@ -5292,7 +5292,7 @@ async function run(): Promise<CommanderCommand> {
   program
     .command('install [target]')
     .description(
-      'Install Claude Code native build. Use [target] to specify version (stable, latest, or specific version)',
+      'Install DeepSeek Code native build. Use [target] to specify version (stable, latest, or specific version)',
     )
     .option('--force', 'Force installation even if already installed')
     .action(async (target: string | undefined, options: { force?: boolean }) => {
@@ -5303,10 +5303,10 @@ async function run(): Promise<CommanderCommand> {
   // claude update — update ccb to the latest version via npm or bun
   program
     .command('update')
-    .description('Update claude-code-best (ccb) to the latest version')
+    .description('Update deepseek-code (ccb) to the latest version')
     .action(async () => {
-      const { updateCCB } = await import('./cli/updateCCB.js');
-      await updateCCB();
+      const { updateDeepSeekCode } = await import('./cli/updateDeepSeekCode.js');
+      await updateDeepSeekCode();
     });
 
   // ant-only commands
@@ -5589,7 +5589,7 @@ function maybeActivateBrief(options: unknown): void {
   // into external builds via BriefTool.ts → prompt.ts.
   /* eslint-disable @typescript-eslint/no-require-imports */
   const { isBriefEntitled } =
-    require('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@claude-code-best/builtin-tools/tools/BriefTool/BriefTool.js');
+    require('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js') as typeof import('@deepseek-code/builtin-tools/tools/BriefTool/BriefTool.js');
   /* eslint-enable @typescript-eslint/no-require-imports */
   const entitled = isBriefEntitled();
   if (entitled) {

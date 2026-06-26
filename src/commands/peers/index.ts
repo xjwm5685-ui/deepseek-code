@@ -4,7 +4,7 @@ const peers = {
   type: 'local',
   name: 'peers',
   aliases: ['who'],
-  description: 'List connected Claude Code peers',
+  description: 'List connected DeepSeek Code peers',
   supportsNonInteractive: true,
   load: () => import('./peers.js'),
 } satisfies Command

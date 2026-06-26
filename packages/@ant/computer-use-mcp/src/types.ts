@@ -190,7 +190,7 @@ export interface CuPermissionRequest {
   willHide?: Array<{ bundleId: string; displayName: string }>
   /**
    * `chicagoAutoUnhide` app preference at request time. The renderer picks
-   * between "...then restored when Claude is done" and "...will be hidden"
+   * between "...then restored when DeepSeek Code is done" and "...will be hidden"
    * copy. Absent when `willHide` is absent (same condition).
    */
   autoUnhideEnabled?: boolean
